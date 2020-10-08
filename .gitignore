@@ -1,5 +1,6 @@
 package-lock.json
 /02.express/public
+mysql.json
 /tmp
 # Logs
 logs
@@ -117,3 +118,4 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+03.mysql/js.js
