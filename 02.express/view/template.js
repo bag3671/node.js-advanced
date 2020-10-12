@@ -1,4 +1,3 @@
-  
 module.exports = {
   HOME_CONTENTS:  `
       웹 개발(web development)은 인터넷(월드 와이드 웹)이나 인트라넷(사설망)을 위한 웹사이트를 개발하는 일을 가리킨다. 
