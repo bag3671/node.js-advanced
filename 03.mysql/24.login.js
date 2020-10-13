@@ -29,7 +29,6 @@ let sql = `select * from users where uid like ?`;
 conn.query(sql, uid,(error, results, fields)=>{
   if (error) 
    console.log(error);
-  // console.log(results);
   let result = results[0];
   console.log(results);
   if (result === undefined) {

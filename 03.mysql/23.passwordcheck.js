@@ -29,8 +29,8 @@ let sql = `select * from users where uid like ?`;
 conn.query(sql, uid,(error, results, fields)=>{
   if (error) 
    console.log(error);
-  results = results[0];
-   if (results.pwd === pwdHash) {
+  result = results[0];
+   if (result.pwd === pwdHash) {
     console.log('login 성공');
   }else{
     console.log('login 실패: 패스워드가 다릅니다.');

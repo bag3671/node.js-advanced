@@ -51,7 +51,7 @@ app.post('/login', (req, res) => {
         console.log('login 성공');
         req.session.save(()=>{
           res.redirect('/')
-        })
+        });
       } else {
         const view = require('./view/alertMessage');
         let html = view.alertMsg('login 실패: 패스워드가 틀렸습니다.', '/login')
@@ -63,7 +63,7 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/logout',(req,res)=>{
-  res.clearCookie(req.session.uid);
+  req.session.destroy();
   res.redirect('/login');
 })
 
