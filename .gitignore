@@ -2,6 +2,7 @@ package-lock.json
 /02.express/public
 mysql.json
 /tmp
+sessions/
 # Logs
 logs
 *.log
