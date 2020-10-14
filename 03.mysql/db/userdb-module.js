@@ -52,5 +52,25 @@ module.exports = {
       callback(results[0]);
     });
     conn.end();
+  },
+  deleteUser : function (uid, callback) {
+    let conn = this.getConnection();
+    let sql = `update users set isDeleted=1 where uid like ?;`;
+    conn.query(sql, uid, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
+  },
+  updateUser : function (params, callback) {
+    let conn = this.getConnection();
+    let sql = `update users set pwd=? where uid like ?;`;
+    conn.query(sql, params, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
   }
 }
