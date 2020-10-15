@@ -1,5 +1,11 @@
 package-lock.json
-/02.express/public
+/04.bbs/media
+/node_modules
+/img
+/public
+/02.express/public/
+/04.bbs/public/fontawesome-free-5.15.1-web
+/04.bbs/public/img
 mysql.json
 /tmp
 sessions/
@@ -120,3 +126,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 03.mysql/js.js
+04.bbs/public/fontawesome-free-5.15.1-web.zip

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h2 class="text-center">회원가입</h2>
+    <hr>
+    <div class="row">
+      <div class="col-3"></div>
+      
+      <div class="col-6">
+        <form action="/user/register">
+          <table class="table table-borderless">
+            <tr>
+              <td>사용자ID</td>
+              <td><input type="text" name="uid" id="uid" class="form-control"></td>
+            </tr>
+            <tr>
+              <td>패스워드</td>
+              <td><input type="password" name="pwd" id="pwd" class="form-control"></td>
+            </tr>
+            <tr>
+              <td>패스워드 확인</td>
+              <td><input type="password" name="pwd2" id="pwd2" class="form-control"></td>
+            </tr>
+            <tr>
+              <td>이름</td>
+              <td><input type="text" name="uname" id="uname" class="form-control"></td>
+            </tr>
+            <tr>
+              <td>
+                <input type="submit" class="btn btn-primary" value="수정">
+                <button class="btn btn-secondary" value="취소" onclick = "location.href = '/' ">취소</button></td>
+              </td>
+            </tr>
+          </form>
+          <div class="col-3"></div>
+      </div>
+      
+</body>
+
+</html>
