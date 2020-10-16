@@ -34,7 +34,7 @@ module.exports = {
     </head>
     `
   },
-  top : function(uname){
+  top : function(uname,uid){
     return`
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
     <!-- Brand/logo -->
@@ -45,7 +45,10 @@ module.exports = {
     <!-- Links -->
     <ul class="nav mx-auto">
       <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/">홈</a></h4>
+        <h4><a class="nav-link ml-2 text-light" href="/bbs/list">홈</a></h4>
+      </li>
+      <li class="nav-item">
+        <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
       </li>
       <li class="nav-item">
         <h4><a class="nav-link ml-2 text-light" href="/logout" >로그아웃</a></h4>
@@ -59,7 +62,7 @@ module.exports = {
   </nav>
     `
   },
-  top2 : function(uname){
+  top2 : function(uname, uid){
     return`
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
     <!-- Brand/logo -->
@@ -70,7 +73,10 @@ module.exports = {
     <!-- Links -->
     <ul class="nav mx-auto">
       <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/">홈</a></h4>
+        <h4><a class="nav-link ml-2 text-light" href="/bbs/list">홈</a></h4>
+      </li>
+      <li class="nav-item">
+        <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
       </li>
       <li class="nav-item">
         <h4><a class="nav-link ml-2 text-light" href="/logout" >로그아웃</a></h4>
@@ -169,14 +175,12 @@ module.exports = {
   },
   pagination : function () {
     return `    <ul class="pagination pagination-sm justify-content-center ">
-    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
     <li class="page-item"><a class="page-link" href="/">1</a></li>
     <li class="page-item"><a class="page-link" href="/2">2</a></li>
     <li class="page-item"><a class="page-link" href="/3">3</a></li>
     <li class="page-item"><a class="page-link" href="/4">4</a></li>
-    <li class="page-item"><a class="page-link" href="/5">5</a></li>
     <li class="page-item"><a class="page-link" href="#">Next</a></li>
-    <a href="/create" class="kboard-default-button-small">글쓰기</a>
+    <a href="/bbs/create" class="kboard-default-button-small">글쓰기</a>
 `;
   },
   createForm : function () {
@@ -188,7 +192,7 @@ module.exports = {
           <div class="row"></div>
           <div class="col-1"></div>
           <div class="col">
-          <form action="/create" method="POST">
+          <form action="/bbs/create" method="POST">
           <label for="title" class="text-center">글 제목</label>
           <input type="text" class="form-control form-control"
             style="width:100%;border:1;overflow:visible;text-overflow:ellipsis;"
@@ -208,7 +212,7 @@ module.exports = {
         </body>
     `;
   },
-  showBoard : function (results,uname) {
+  showBoard : function (results,uid) {
     let result = results[0];
     console.log(result);
     return`
@@ -227,7 +231,7 @@ module.exports = {
           </tr>
           <tr>
             <th class="success">작성자</th>
-            <td>${uname}</td>
+            <td>${result.uid}</td>
             <th class="success">작성일</th>
             <td>${result.modTime}</td>
           </tr>
@@ -245,9 +249,9 @@ module.exports = {
           <tr>
             <td colspan="4" class="text-center">
               <input type="button" class="btn btn-success" value="답글 쓰기" onclick="location.href='#'">
-              <input type="button" class="btn btn-warning" value="수정하기" onclick="location.href='/bbs/update/${result.bid}'">
-              <input type="button" class="btn btn-danger" value="삭제하기" onclick="location.href='#'">
-              <input type="button" class="btn btn-primary" value="목록보기" onclick="location.href='/'">
+              <input type="button" class="btn btn-warning" value="수정하기" onclick="location.href='/bbs/update/${result.bid}/${result.uid}'">
+              <input type="button" class="btn btn-danger" value="삭제하기" onclick="location.href='/bbs/delete/${result.bid}/${result.uid}'">
+              <input type="button" class="btn btn-primary" value="목록보기" onclick="location.href='/bbs/list'">
             </td>
           </tr>
         </table>
@@ -256,7 +260,7 @@ module.exports = {
   </div>
     `;
   },
-  updateForm : function (result) {
+  updateForm : function (result,uid) {
     return `<body>
     <h1 class="text-center">수정</h1>
     <hr>
@@ -264,8 +268,9 @@ module.exports = {
     <div class="row"></div>
     <div class="col-1"></div>
     <div class="col">
-    <form action="/bbs/update" method="POST">
-    <<input type="hidden"name="bid" value="${result.bid}">
+    <form action="/bbs/update/${uid}" method="POST">
+    <input type="hidden"name="bid" value="${result.bid}">
+    <input type="hidden"name="uid" value="${uid}">
     <label for="title" class="text-center">글 제목</label>
     <input type="text" class="form-control form-control"
     value ="${result.title}"
@@ -287,59 +292,87 @@ module.exports = {
     </div>
   </body>`;
   },
-  replyForm : function (result,uname,existReply) {
+  replyForm : function () {
+    return`<div class="container">
+    <form id="commentForm" name="commentForm" method="post">
+    <br><br>
+        <div>
+            <div>
+                <span><strong>Comments</strong></span> <span id="cCnt"></span>
+            </div>
+            <div>
+                <table class="table">                    
+                    <tr>
+                        <td>
+                            <textarea style="width: 1100px" rows="3" cols="30" id="comment" name="comment" placeholder="댓글을 입력하세요"></textarea>
+                            <br>
+                            <div>
+                                <a href='#' class="btn pull-right btn-success">등록</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <input type="hidden" id="" name="" value="" >        
+    </form>
+</div>
+<div class="container">
+    <form id="commentListForm" name="commentListForm" method="post">
+        <div id="commentList">
+        </div>
+    </form>
+</div>
+ `
+  },
+  updateUserForm : function (result,uid) {
     return`
+    <div class="container" style="margin-top: 90px;">  
     <div class="row">
-    <div class="col-xs-2 col-md-2"></div>
-    <div class="col-xs-9 col-md-9">
-      <h2 class="text-center">게시글 보기</h2>
-      <p>&nbsp;</p>
-      <div class="table table-responsive">
-        <table class="table">
-          <tr>
-            <th class="">글번호</th>
-            <td>${result.bid}</td>
-            <th class="">조회수</th>
-            <td>${result.viewCount}</td>
-          </tr>
-          <tr>
-            <th class="success">작성자</th>
-            <td>${uname}</td>
-            <th class="success">작성일</th>
-            <td>${result.modTime}</td>
-          </tr>
-          <tr>
-            <th class="success" colspan="1">제목</th>
-            <td colspan="3">${result.title}</td>
-          </tr>
-          <tr>
-            <th class="success text-center" colspan="4">글 내용</th>
-          </tr>
-          <tr>
-            <td colspan="4">${result.content}</td>
-          </tr>
-          <tr>
-            ${existReply}
-          </tr>
-            <tr>
-            <form action="/bbs/${bid}" method="post">
-              <th>댓글</th>
-              <td><textarea name="reply" id="reply" cols="30" rows="10"></textarea></td>
+        <div class="col-12">
+            <h3>개인정보 수정</h3>
+            <hr>
+        </div>
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form action="/user/register" method="post">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><label for="uid">사용자 ID</label></td>
+                        <td><input type="text" name="uid" id="uid" value = "${uid}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="pwd">패스워드</label></td>
+                        <td><input type="password" name="pwd" id="pwd"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="pwd2">패스워드 확인</label></td>
+                        <td><input type="password" name="pwd2" id="pwd2"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="uname">이름</label></td>
+                        <td><input type="text" name="uname" id="uname"value = "${result.uname}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="email">email</label></td>
+                        <td><input type="email" name="email" id="email"value = "${result.email}"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="tel">전화번호</label></td>
+                        <td><input type="tel" name="tel" id="tel"value = "${result.tel}"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <input class="btn btn-primary" type="submit" value="제출">
+                            <input button class="btn btn-secondary" type="reset" value="취소" onclick = "location href = '/bbs/list'">
+                        </td>
+                    </tr>
+                </table>
             </form>
-          </tr>
-          <tr>
-            <td colspan="4" class="text-center">
-              <input type="button" class="btn btn-success" value="답글 쓰기" onclick="location.href='#'">
-              <input type="button" class="btn btn-warning" value="수정하기"
-                onclick="location.href='/bbs/update/${result.bid}'">
-              <input type="button" class="btn btn-danger" value="삭제하기" onclick="location.href='#'">
-              <input type="button" class="btn btn-primary" value="목록보기" onclick="location.href='/'">
-            </td>
-          </tr>
-        </table>
+        </div>
+        <div class="col-3"></div>
       </div>
     </div>
-  </div>
-    `
+    `;
   }
 }

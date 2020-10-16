@@ -1,13 +1,13 @@
 const templete = require('./templete');
 
 module.exports = {
-  mainForm: function (uname, rows) {
+  mainForm: function (uname, rows, uid) {
     let html = '';
-    for(let row of rows){
+    for (let row of rows) {
       html += `
       <tr>
         <td>${row.bid}</td>
-        <td><a href = "/bbs/${row.bid}">${row.title}</a></td>
+        <td><a href = "/bbs/list/${row.bid}/${uid}">${row.title}</a></td>
         <td>${row.uid}</td>
         <td>${row.modTime}</td>
         <td>${row.viewCount}</td>
@@ -17,7 +17,7 @@ module.exports = {
     return `
      ${templete.header2()}
      <body class="pt-5">
-     ${templete.top(uname)}
+     ${templete.top(uname, uid)}
     <div class="container pt-5">
     <table class="table table-hover">
     
@@ -42,8 +42,8 @@ module.exports = {
     </html>
     `;
   },
-  create : function () {
-    return`
+  create: function () {
+    return `
     ${templete.header2()}
     ${templete.top()}
     <body class="pt-auto">
@@ -54,30 +54,91 @@ module.exports = {
     </html>
     `;
   },
-  BoardInfo : function (results,uname) {
-    return`
+  BoardInfo: function (results, uname, uid) {
+    return `
     ${templete.header2()}
-    ${templete.top2(uname)}
+    ${templete.top2(uname, uid)}
     <body class="pt-auto">
-    ${templete.showBoard(results,uname)}
+    ${templete.showBoard(results, uid)}
+    ${templete.replyForm()}
     ${templete.footer()}
     </body>
     </html>
     `;
   },
-  existReply : function (rows) {
+  updateboard: function (uid, result, uname) {
+    return `
+    ${templete.header2}
+    ${templete.top2(uname, uid)}
+    <body class="pt-auto">
+    ${templete.updateForm(result, uid)}
+    ${templete.footer()}
+    </body>
+    </html>
+    `;
+  },
+  updateUser: function (result, uname, uid) {
+    return `
+    ${templete.header2}
+    ${templete.top2(uname, uid)}
+    <body class="pt-auto">
+    ${templete.updateUserForm(result, uid)}
+    ${templete.footer()}
+    </body>
+    </html>
+    `;
+  },
+  existReply: function (rows) {
     let html = '';
-    for (row of rows){
+    for (row of rows) {
       html += `
       <td>${row.uid} : ${row.content}</td> 
   `
     }
-    return`
+    return `
     ${templete.header2()}
     <body class="pt-5">
     ${templete.top(uname)}
     `;
+  },
+  pagingList: function (result) {
+    let html = '';
+    for (let i = result.startPage; i < result.endPage;) {
+      if (curPage < 0) {
+        break;
+      } else {
+          html += `
+                <li value=${i}  class='active' >
+                <a href='/pasing/${i} '>
+                ${i} 
+                </a>
+                </li>
+                `;
+      };
+      return `
+      <div class="container">
+        <ul class="pager">
+          <li value="${startPage-1}" class="previous">
+            <a href="'/list/page/${startPage-1}'">이전페이지</a>
+          </li>
+          ${html}
+          <li value="${endPage+1}" class="next">
+            <a href="'/list/page/${endPage+1}'">다음페이지</a>
+          </li>
+        </ul>
+      </div>
+      `
+    }
+
+    return `<div class="container">
+      <ul class="pager">
+      <li value="${startPage}-1" class="previous">
+      <a href="'/list/page/${startPage - 1}'">이전페이지</a>
+    </li>`;
+
+
+
   }
-  
+
 
 } 

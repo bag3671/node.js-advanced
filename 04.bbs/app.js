@@ -10,6 +10,8 @@ const bRouter = require('./bbsRouter');
 const ut = require('./view/util')
 const dm = require('./db/db-module');
 const test = require('./view/mainForm');
+const util = require('./view/util');
+
 
 const app = express();
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
@@ -27,13 +29,8 @@ app.use(session({
 app.use('/user', uRouter);
 app.use('/bbs', bRouter);
 
-app.get('/', (req,res)=>{
-  dm.getAllLists(rows =>{
-    const view = require('./view/mainForm');
-    let uname = req.session.uname
-    let html = view.mainForm(uname,rows);
-    res.send(html);
-  })
+app.get('/',(req,res)=>{
+  res.redirect('/')
 })
 
 app.get('/login',(req,res)=>{
@@ -42,7 +39,7 @@ app.get('/login',(req,res)=>{
 });
 });
 
-app.post('/login', (req, res) => {
+app.post('/login',(req, res) => {
   let uid = req.body.uid
   let pwd = req.body.pwd
   let pwdHash = ut.ganerateHash(pwd)
@@ -57,7 +54,7 @@ app.post('/login', (req, res) => {
         req.session.uname = result.uname;
         console.log('login 성공');
         req.session.save(() => {
-          res.redirect('/')
+          res.redirect('/bbs/list')
         });
       } else {
         const view = require('./view/alertMessage');
@@ -69,20 +66,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-app.get('/create',(req,res)=>{
-  let html = test.create();
-  res.send(html);
-})
-
-app.post('/create',(req,res)=>{
-  let title = req.body.title;
-  let content =  req.body.content
-  let uid = req.session.uid
-  let params= [uid,title,content]
-  dm.createBoard(params,()=>{
-    res.redirect('/')
-  })
-})
 
 app.get('/logout', (req,res)=>{
   req.session.destroy();

@@ -7,7 +7,7 @@ let info = fs.readFileSync('./mysql.json', 'utf8');
 let config = JSON.parse(info);
 
 
-module.exports ={
+module.exports = {
   getConnection: function () {
     let conn = mysql.createConnection({
       host: config.host,
@@ -25,7 +25,7 @@ module.exports ={
     });
     return conn;
   },
-  getUserInfo:  function (uid, callback) {
+  getUserInfo: function (uid, callback) {
     let conn = this.getConnection();
     let sql = `select * from users where uid like ?`;
     conn.query(sql, uid, (error, results, fields) => {
@@ -70,9 +70,9 @@ module.exports ={
         Foreign KEY(uid) REFERENCES users(uid)
         );
     `;
-    conn.query(dbTable,(error,fields) => {
-      conn.query(bbs,(error,fields) => {
-        conn.query(users,(error,fields) => {
+    conn.query(dbTable, (error, fields) => {
+      conn.query(bbs, (error, fields) => {
+        conn.query(users, (error, fields) => {
           if (error)
             console.log(error);
           callback();
@@ -87,13 +87,13 @@ module.exports ={
     });
     conn.end();
   },
-  registUser : function (uid, pwd, uname) {
+  registUser: function (uid, pwd, uname, email, tel) {
     let conn = this.getConnection();
     let sql = `
-    insert into users(uid, pwd, uname) VALUE(?, ?, ?);
+    insert into users(uid, pwd, uname, email, tel) VALUE(?, ?, ?,?,?);
     `;
-    let params = [uid, pwd, uname];
-    conn.query(sql, params, (error, fields)=>{
+    let params = [uid, pwd, uname, email, tel];
+    conn.query(sql, params, (error, fields) => {
       if (error)
         console.log(error);
     });
@@ -114,35 +114,103 @@ module.exports ={
     });
     conn.end();
   },
-  createBoard : function (params, callback) {
+  createBoard: function (params, callback) {
     let sql = `INSERT INTO bbs (uid,title, content)  VALUE (?,?,?); `;
     let conn = this.getConnection();
-    conn.query(sql, params, (error,fields)=>{
-      if (error) 
+    conn.query(sql, params, (error, fields) => {
+      if (error)
         console.log(error);
-        callback();
+      callback();
     });
     conn.end();
   },
-  getBbs : function (bid,callback) {
+  getBbs: function (params, callback) {
     let sql = `select bid,uid,title,content,date_format(modTime, '%Y-%m-%d')AS modTime,viewCount from bbs where bid = ?
+    
     `;
     let conn = this.getConnection();
-    conn.query(sql,bid,(error,results,fields)=>{
-      if (error) 
+    conn.query(sql, params, (error, results, fields) => {
+      if (error)
         console.log(error);
       callback(results);
     });
     conn.end();
   },
-  updateBbs : function (params,callback) {
+  updateBbs: function (params, callback) {
     let sql = `UPDATE bbs SET title = ?, content = ? WHERE bid = ? `
     let conn = this.getConnection();
-    conn.query(sql, params, (error,fields)=>{
-      if (error) 
-      console.log(error);
-    callback();
+    conn.query(sql, params, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
     });
     conn.end();
+  },
+  deleteBbs: function (bid, callback) {
+    let sql = `update bbs set isDeleted = 1 where bid = ?`
+    let conn = this.getConnection();
+    conn.query(sql, bid, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
+  },
+  updateUser: function (params, callback) {
+    let sql = `
+    update users set uname = ?, pwd = ?,tel = ?, email = ? where uid = ?
+    `;
+    let conn = this.getConnection();
+    conn.query(sql, params, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
+  },
+  pagingList: function (callback) {
+    let curPage = req.params.page;
+    let sql = `select count(*) as cur
+                from bbs
+                where isDeleted = 0
+                ORDER BY bid DESC
+                `;
+    let page_size = 10;
+    let page_list_size = 10;
+    let totalPagecount = 0;
+    let no = '';
+    let conn = getConnection();
+    conn.query(sql, (error, results, fields) => {
+      totalPagecount = data[0].cur;
+      console.log("현재 페이지 : " + curPage, "전체 페이지 : " + totalPagecount);
+      if (totalPagecount < 0) 
+        totalPagecount = 0
+      let totalPage = Math.ceil(totalPagecount / page_size); //전체페이지수
+      let totalSet = Math.ceil(totalPagecount / page_list_size); //전체 세트 수
+      let curSet = Math.ceil(curPage / page_list_size);//현재세트 번호
+      let startPage = ((curSet - 1) * 10) + 1//세트내 출력될 시작 페이지
+      let endPage = (startPage + page_list_size) - 1//현재 세트내 출력될 마지막 페이지
+
+      //limit에 들어갈 첫? 구하기 
+      if (curPage < 0) {
+        no = 0
+      } else {
+        no = (curPage - 1) * 10
+      }
+      var result2 = {
+        "curPage": curPage,
+        "page_list_size": page_list_size,
+        "page_size": page_size,
+        "totalPage": totalPage,
+        "totalSet": totalSet,
+        "curSet": curSet,
+        "startPage": startPage,
+        "endPage": endPage
+        };
+      callback(result2)
+    })
+    conn.end()
+
+
   }
 }
