@@ -1,4 +1,8 @@
 const templete = require('./templete');
+const express = require('express');
+const fs = require('fs');
+const app = express();
+app.use(express.static(__dirname + '/public'));
 
 module.exports = {
   mainForm: function (uname, rows, uid) {
@@ -54,13 +58,18 @@ module.exports = {
     </html>
     `;
   },
-  BoardInfo: function (results, uname, uid) {
+  BoardInfo: function (results, uname, uid, rows) {
+    let html = '';
+    for (row of rows) {
+      html += `<tr><td><span class="badge badge-primary"><h5>${row.uid} : </h5></span>${row.content}
+      <button type="button" class="btn btn-primary float-right">삭제</button></td></tr>
+      `;}
     return `
     ${templete.header2()}
     ${templete.top2(uname, uid)}
     <body class="pt-auto">
     ${templete.showBoard(results, uid)}
-    ${templete.replyForm()}
+    ${templete.replyForm(html)}
     ${templete.footer()}
     </body>
     </html>

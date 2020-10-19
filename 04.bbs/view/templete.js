@@ -1,3 +1,4 @@
+
 module.exports = {
   header2 : function () {
     return`
@@ -214,7 +215,9 @@ module.exports = {
   },
   showBoard : function (results,uid) {
     let result = results[0];
-    console.log(result);
+    let txtBox = result.content
+    console.log(txtBox);
+    let line = txtBox.replace(/(\n|\r\n)/g, '<br>');
     return`
     <div class="row">
     <div class="col-xs-2 col-md-2"></div>
@@ -243,7 +246,7 @@ module.exports = {
             <th class="success text-center" colspan="4">글 내용</th>
             </tr>
             <tr>
-            <td colspan="4">${result.content}</td>
+            <td colspan="4" id = "result.content">${line}</td>
           </tr>
           <br>
           <tr>
@@ -292,7 +295,7 @@ module.exports = {
     </div>
   </body>`;
   },
-  replyForm : function () {
+  replyForm : function (html) {
     return`<div class="container">
     <form id="commentForm" name="commentForm" method="post">
     <br><br>
@@ -301,29 +304,23 @@ module.exports = {
                 <span><strong>Comments</strong></span> <span id="cCnt"></span>
             </div>
             <div>
-                <table class="table">                    
+                <table class="table"> 
+                    ${html}
                     <tr>
                         <td>
                             <textarea style="width: 1100px" rows="3" cols="30" id="comment" name="comment" placeholder="댓글을 입력하세요"></textarea>
                             <br>
                             <div>
-                                <a href='#' class="btn pull-right btn-success">등록</a>
+                                <input type="submit" value="등록"class="btn pull-right btn-success">
                             </div>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
-        <input type="hidden" id="" name="" value="" >        
+        <input type="hidden" id="rid" name="rid" value="" >        
     </form>
-</div>
-<div class="container">
-    <form id="commentListForm" name="commentListForm" method="post">
-        <div id="commentList">
-        </div>
-    </form>
-</div>
- `
+</div>`
   },
   updateUserForm : function (result,uid) {
     return`

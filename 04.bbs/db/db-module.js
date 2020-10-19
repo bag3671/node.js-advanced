@@ -212,5 +212,41 @@ module.exports = {
     conn.end()
 
 
+  },
+  getReply : function (bid, callback) {
+    let sql = `
+    SELECT * FROM reply where bid = ? and isDeleted = 0    
+    `;
+    let conn = this.getConnection();
+    conn.query(sql, bid, (error,resultRp,fields) => {
+      if (error)
+        console.log(error);
+      callback(resultRp);
+    });
+    conn.end();
+  },
+  createRply : function (params, callback) {
+    let sql = `INSERT reply(bid, uid, content) 
+    VALUE(?, ?, ?) 
+    `;
+    let conn = this.getConnection();
+    conn.query(sql,params, (error,fields)=>{
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
+  },
+  deleteReply : function (rid,callback) {
+    let sql = `
+    update reply set isDeleted = 1 where rid = ?
+    `;
+    let conn = this.getConnection();
+    conn.query(sql,rid,(error,fields)=>{
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
   }
 }

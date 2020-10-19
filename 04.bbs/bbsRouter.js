@@ -1,6 +1,6 @@
 const express = require('express');
-const { data } = require('jquery');
-const { getConnection } = require('./db/db-module');
+const  data  = require('jquery');
+const  getConnection  = require('./db/db-module');
 const dm = require('./db/db-module');
 const mainForm = require('./view/mainForm');
 const templete = require('./view/templete');
@@ -14,7 +14,6 @@ bRouter.get('/list',ut.isLoggedin, (req,res)=>{
     const view = require('./view/mainForm');
     let uname = req.session.uname
     let uid = req.session.uid
-    console.log(uid);
     let html = view.mainForm(uname,rows,uid);
     res.send(html);
   })
@@ -40,9 +39,10 @@ bRouter.get('/list/:bid/:uid', (req, res) => {
   let bid = req.params.bid;
   let uid = req.params.uid
   dm.getBbs(bid, results => {
-    console.log(results);
-    let html = mainForm.BoardInfo(results, uid);
-    res.send(html);
+    dm.getReply(bid,resultRp=>{
+      let html = mainForm.BoardInfo(results, uname, uid, resultRp);
+      res.send(html);
+    })
   })
 });
 
@@ -91,14 +91,32 @@ bRouter.get('/delete/:bid/:uid', ut.isLoggedin, (req, res) => {
 bRouter.get('/list/page/:page/:bid/:uid', ut.isLoggedin, (req,res)=>{
   let uname = req.session.uname;
   let bid = req.params.bid;
-  let uid = req.params.uid
+  let uid = req.params.uid;
   dm.pagingList(result =>{
     dm.getAllLists(result=>{
       console.log(result);
     } )
   })
 })
+bRouter.post('/list/:bid/:uid',ut.isLoggedin,(req,res)=>{
+  let bid = req.params.bid
+  let uidBoard = req.params.uid
+  let uidLogin = req.session.uid
+  let comment = req.body.comment
+  console.log(comment);
+  let params = [bid, uidLogin, comment]
+  dm.createRply(params,()=>{
+    res.redirect(`/bbs/list/${bid}/${uidBoard}`)
+  })
 
+})
+bRouter.get('/reply/delete/:bid/:uid',ut.isLoggedin,(req,res)=>{
+  let bid = req.params.bid
+  let uidBoard = req.params.uid
+  let uidLogin = req.session.uid
+  let rid = req
+  console.log(rid);
+})
 
 
 module.exports = bRouter;

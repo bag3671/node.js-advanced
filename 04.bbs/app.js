@@ -30,7 +30,7 @@ app.use('/user', uRouter);
 app.use('/bbs', bRouter);
 
 app.get('/',(req,res)=>{
-  res.redirect('/')
+  res.redirect('/bbs/list')
 })
 
 app.get('/login',(req,res)=>{
