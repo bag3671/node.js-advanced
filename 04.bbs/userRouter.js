@@ -64,4 +64,10 @@ uRouter.post('/update',ut.isLoggedin,(req,res)=>{
   }
 })
 
+uRouter.get('/delete',ut.isLoggedin,(req,res)=>{
+  let uid = req.session.uid
+  dm.deleteUser(uid,()=>{
+    res.redirect('/logout')
+  })
+})
 module.exports = uRouter;

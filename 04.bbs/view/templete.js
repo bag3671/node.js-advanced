@@ -99,7 +99,7 @@ module.exports = {
     return `
     <div class="navbar navbar-expand navbar-light bg-light fixed-bottom style=" height: 30px;">
       <div class="mx-auto" style="width:170px">Copyright 2017 by kitae</div>
-      <a href="#top" class="badge badge-pill badge-primary float-right">탑으로</a>
+      <a href="#top" class="badge badge-pill badge-primary float-right"></a>
     </div>
     `
   },
@@ -206,8 +206,10 @@ module.exports = {
                     </li>`;
     return `   <ul class="pagination pagination-sm justify-content-center ">
     ${pages}
-    <a href="/bbs/create" class="kboard-default-button-small">글쓰기</a>
+    <br>
     </ul>
+    
+    <button type = "button" class="btn btn-outline-primary float-right" onclick = "location.href = '/bbs/create'">글쓰기</button>
 `;
   },
   createForm: function () {
@@ -385,13 +387,15 @@ module.exports = {
                     <tr>
                         <td colspan="2" style="text-align: center;">
                             <input class="btn btn-primary" type="submit" value="제출">
-                            <input button class="btn btn-secondary" type="reset" value="취소" onclick = "location href = '/bbs/list/1'">
+                            <button class="btn btn-secondary" value="취소" onclick = "location href = '/bbs/list/1'">취소</button>
+                            <button class="btn btn-outline-danger float-right floating-button" onclick="location.href = '/user/delete'">탈퇴</button>
                         </td>
                     </tr>
                 </table>
             </form>
         </div>
-        <div class="col-3"></div>
+        <div class="col-3">
+        </div>
       </div>
     </div>
     `;

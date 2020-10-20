@@ -50,7 +50,7 @@ bRouter.post('/create',(req,res)=>{
 })
 
 
-bRouter.get('/:bid/:uid', (req, res) => {
+bRouter.get('/:bid/:uid',ut.isLoggedin, (req, res) => {
   let uname = req.session.uname;
   let bid = req.params.bid;
   let uid = req.params.uid
@@ -112,7 +112,9 @@ bRouter.post('/:bid/:uid',ut.isLoggedin,(req,res)=>{
   let comment = req.body.comment
   let params = [bid, uidLogin, comment]
   dm.createRply(params,()=>{
-    res.redirect(`/bbs/${bid}/${uidBoard}`)
+    dm.increaseReplyCount(bid,()=>{
+      res.redirect(`/bbs/${bid}/${uidBoard}`)
+    })
   })
 
 })
@@ -125,7 +127,9 @@ bRouter.get('/reply/delete/:bid/:uid/:rid',ut.isLoggedin,(req,res)=>{
     console.log(result[0]);
     if (uidLogin === result[0].uid) {
       dm.deleteReply(rid,()=>{
-        res.redirect(`/bbs/${bid}/${uidBoard}`)
+        dm.decreaseReplyCount(bid,()=>{
+          res.redirect(`/bbs/${bid}/${uidBoard}`)
+        })
       })
     }else{
       const view = require('./view/alertMessage');

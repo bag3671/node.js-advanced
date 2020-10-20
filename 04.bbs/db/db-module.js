@@ -27,7 +27,7 @@ module.exports = {
   },
   getUserInfo: function (uid, callback) {
     let conn = this.getConnection();
-    let sql = `select * from users where uid like ?`;
+    let sql = `select * from users where uid like ? and isDeleted = 0`;
     conn.query(sql, uid, (error, results, fields) => {
       if (error)
         console.log(error);
@@ -283,7 +283,7 @@ module.exports = {
   getBbsList:     function(offset, callback) {
     let conn = this.getConnection();
     let sql = `SELECT b.bid, b.uid, u.uname, b.title, b.content, 
-    date_format(b.modTime, '%Y-%m-%d')AS modTime, b.viewCount, b.replyCount
+    date_format(b.modTime, '%Y-%m-%d')AS modTime,date_format(b.modTime, '%H:%i:%s')AS modTime2, b.viewCount, b.replyCount
                 FROM bbs AS b
                 JOIN users AS u
                 ON b.uid=u.uid
@@ -325,5 +325,37 @@ module.exports = {
       callback();
     });
     conn.end();
+  },
+  increaseReplyCount:  function(bid, callback) {
+    let conn = this.getConnection();
+    let sql = `update bbs set replyCount=replyCount+1 where bid=?;`;
+    conn.query(sql, bid, (error, fields) => {
+        if (error)
+            console.log(error);
+        callback();
+    });
+    conn.end();
+  },
+  decreaseReplyCount:  function(bid, callback) {
+    let conn = this.getConnection();
+    let sql = `update bbs set replyCount=replyCount-1 where bid=?;`;
+    conn.query(sql, bid, (error, fields) => {
+        if (error)
+            console.log(error);
+        callback();
+    });
+    conn.end();
+  },
+  deleteUser : function (uid, callback) {
+    let conn = this.getConnection();
+    let sql = `
+    update users SET isDeleted = 1 WHERE uid = ?
+    `;
+    conn.query(sql, uid, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
+    })
   }
+
 }

@@ -9,18 +9,29 @@ module.exports = {
   mainForm: function (uname, rows, uid,pageNo,startPage,endPage,totalPage) {
     var moment = require('moment');
     var date = moment().format('YYYY-MM-DD');
-    console.log(date);
     let html = '';
     for (let row of rows) {
-      html += `
+      if (row.modTime !== date) {
+        html += `
+        <tr>
+          <td>${row.bid}</td>
+          <td><a href = "/bbs/${row.bid}/${uid}">${row.title}</a><small>[${row.replyCount}]</small></td>
+          <td>${row.uid}</td>
+          <td>${row.modTime}</td>
+          <td>${row.viewCount}</td>
+        </tr>
+        `;
+      }else{
+        html += `
       <tr>
         <td>${row.bid}</td>
-        <td><a href = "/bbs/${row.bid}/${uid}">${row.title}</a></td>
+        <td><a href = "/bbs/${row.bid}/${uid}">${row.title}</a><small>[${row.replyCount}]</small></td>
         <td>${row.uid}</td>
-        <td>${row.modTime}</td>
+        <td>${row.modTime2}</td>
         <td>${row.viewCount}</td>
       </tr>
       `;
+      }
     }
     return `
      ${templete.header2()}
@@ -56,7 +67,6 @@ module.exports = {
     ${templete.top()}
     <body class="pt-auto">
     ${templete.createForm()}
-    ${templete.pagination()}   
     ${templete.footer()}
     </body>
     </html>
