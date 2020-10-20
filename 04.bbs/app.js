@@ -30,7 +30,7 @@ app.use('/user', uRouter);
 app.use('/bbs', bRouter);
 
 app.get('/',(req,res)=>{
-  res.redirect('/bbs/list')
+  res.redirect('/bbs/list/1')
 })
 
 app.get('/login',(req,res)=>{
@@ -54,7 +54,7 @@ app.post('/login',(req, res) => {
         req.session.uname = result.uname;
         console.log('login 성공');
         req.session.save(() => {
-          res.redirect('/bbs/list')
+          res.redirect('/')
         });
       } else {
         const view = require('./view/alertMessage');

@@ -225,6 +225,18 @@ module.exports = {
     });
     conn.end();
   },
+  getReply2 : function (bid, callback) {
+    let sql = `
+    SELECT * FROM reply where rid = ? and isDeleted = 0    
+    `;
+    let conn = this.getConnection();
+    conn.query(sql, bid, (error,resultRp,fields) => {
+      if (error)
+        console.log(error);
+      callback(resultRp);
+    });
+    conn.end();
+  },
   createRply : function (params, callback) {
     let sql = `INSERT reply(bid, uid, content) 
     VALUE(?, ?, ?) 
@@ -243,6 +255,71 @@ module.exports = {
     `;
     let conn = this.getConnection();
     conn.query(sql,rid,(error,fields)=>{
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
+  },
+  SearchTtile : function () {
+    let sql = `
+    SELECT * FROM bbs WHERE title = ?
+    `;
+    let conn = this.getConnection();
+    conn.query(sql,title,(error,fields)=>{
+
+    })
+  },
+  getBbsTotalCount: function (callback) {
+    let conn = this.getConnection();
+    let sql = `SELECT count(*) as count FROM bbs where isDeleted=0;`;
+    conn.query(sql, (error, results, fields) => {
+      if (error)
+        console.log(error);
+      callback(results[0]);   // 주의할 것
+    });
+    conn.end();
+  },
+  getBbsList:     function(offset, callback) {
+    let conn = this.getConnection();
+    let sql = `SELECT b.bid, b.uid, u.uname, b.title, b.content, 
+    date_format(b.modTime, '%Y-%m-%d')AS modTime, b.viewCount, b.replyCount
+                FROM bbs AS b
+                JOIN users AS u
+                ON b.uid=u.uid
+                WHERE b.isDeleted=0
+                ORDER BY b.bid DESC 
+                LIMIT 10 offset ?;`;
+    conn.query(sql, offset, (error, rows, fields) => {
+        if (error)
+            console.log(error);
+        callback(rows);
+    });
+    conn.end();
+  },
+  findTitle : function (keyword,callback) {
+    let conn = this.getConnection();
+    let sql = `
+    SELECT b.bid, b.uid, u.uname, b.title, b.content, 
+    b.modTime, b.viewCount, b.replyCount
+    FROM bbs AS b
+    JOIN users AS u
+    ON b.uid=u.uid
+    WHERE b.isDeleted=0 and b.title like ?
+    ORDER BY b.bid DESC;    `;
+    conn.query(sql, keyword, (error, result, fields) => {
+      if (error)
+        console.log(error);
+      callback(result);
+    });
+    conn.end();
+  },
+  increaseViewCount: function (bid, callback) {
+    let conn = this.getConnection();
+    let sql = `
+    update bbs set viewCount = viewCount + 1 where bid = ?
+    `;
+    conn.query(sql, bid, (error, fields) => {
       if (error)
         console.log(error);
       callback();

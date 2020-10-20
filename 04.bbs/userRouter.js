@@ -31,7 +31,7 @@ uRouter.post('/register', (req, res) => {
   }
 
 });
-uRouter.get('/update/:uid', (req, res) => {
+uRouter.get('/update/:uid', ut.isLoggedin,(req, res) => {
   let uname = req.session.uname;
   console.log(uname);
   let uid = req.params.uid
@@ -44,7 +44,7 @@ uRouter.get('/update/:uid', (req, res) => {
   })
 })
 
-uRouter.post('/update',(req,res)=>{
+uRouter.post('/update',ut.isLoggedin,(req,res)=>{
   let uname = req.body.uname
   let pwd = req.body.pwd
   let pwd2 = req.body.pwd2
@@ -55,7 +55,7 @@ uRouter.post('/update',(req,res)=>{
     let pwdHash = ut.ganerateHash(pwd)
     let params = [uname, pwdHash, tel, email, uid]
     dm.updateUser(params, ()=>{
-      res.redirect('/bbs/list');
+      res.redirect('/');
     });
   }else{  //패스워드 입력이 잘못된 경우
     const view = require('./view/alertMessage');

@@ -1,7 +1,7 @@
 
 module.exports = {
-  header2 : function () {
-    return`
+  header2: function () {
+    return `
     <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -18,9 +18,9 @@ module.exports = {
 </head >
     `
   },
-  
-  header : function () {
-    return`
+
+  header: function () {
+    return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -35,18 +35,50 @@ module.exports = {
     </head>
     `
   },
-  top : function(uname,uid){
-    return`
+  top: function (uname, uid) {
+    return `
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
     <!-- Brand/logo -->
     <a class="navbar-brand" href="#">
-      <img src="img/logo.jpg" alt="logo" style="height:40px;margin-left: 40px;margin-right: 50px;">
+      <img src="/img/logo.jpg" alt="logo" style="height:40px;margin-left: 40px;margin-right: 50px;">
     </a>
 
     <!-- Links -->
     <ul class="nav mx-auto">
       <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/bbs/list">홈</a></h4>
+        <h4><a class="nav-link ml-2 text-light" href="/bbs/list/1">홈</a></h4>
+      </li>
+      <li class="nav-item">
+        <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
+      </li>
+      <li class="nav-item">
+        <h4><a class="nav-link ml-2 text-light" href="/logout" >로그아웃</a></h4>
+      </li>
+    </ul>
+    <span class="navbar-text mx-auto text-light">
+      <h4>${uname}님 반갑습니다</h4>
+    </span>
+    <form class="form-inline" action="/bbs/search" method="POST">
+      <input class="form-control mr-sm-2" type="text" name = "title" id = "title" placeholder="Search Title">
+      <button class="btn btn-success" type="submit">Search</button>
+    </form>
+    <a href="https://www.google.com/search?q=%EB%82%A0%EC%94%A8&oq=%EB%82%A0%EC%94%A8&aqs=chrome..69i57j0l5j69i61l2.2025j1j4&sourceid=chrome&ie=UTF-8"
+      target="_black"><i class="fas fa-umbrella fa-5x float-right text-light"></i></a>
+  </nav>
+    `
+  },
+  top2: function (uname, uid) {
+    return `
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="#">
+      <img src="/img/logo.jpg" alt="logo" style="height:40px;margin-left: 40px;margin-right: 50px;">
+    </a>
+
+    <!-- Links -->
+    <ul class="nav mx-auto">
+      <li class="nav-item">
+        <h4><a class="nav-link ml-2 text-light" href="/bbs/list/1">홈</a></h4>
       </li>
       <li class="nav-item">
         <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
@@ -63,43 +95,15 @@ module.exports = {
   </nav>
     `
   },
-  top2 : function(uname, uid){
-    return`
-  <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
-    <!-- Brand/logo -->
-    <a class="navbar-brand" href="#">
-      <img src="/04.bbs/public/img/logo.jpg" alt="logo" style="height:40px;margin-left: 40px;margin-right: 50px;">
-    </a>
-
-    <!-- Links -->
-    <ul class="nav mx-auto">
-      <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/bbs/list">홈</a></h4>
-      </li>
-      <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
-      </li>
-      <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/logout" >로그아웃</a></h4>
-      </li>
-    </ul>
-    <span class="navbar-text mx-auto text-light">
-      <h4>${uname}님 반갑습니다</h4>
-    </span>
-    <a href="https://www.google.com/search?q=%EB%82%A0%EC%94%A8&oq=%EB%82%A0%EC%94%A8&aqs=chrome..69i57j0l5j69i61l2.2025j1j4&sourceid=chrome&ie=UTF-8"
-      target="_black"><i class="fas fa-umbrella fa-5x float-right text-light"></i></a>
-  </nav>
-    `
-  },
-  footer : function () {
-    return`
+  footer: function () {
+    return `
     <div class="navbar navbar-expand navbar-light bg-light fixed-bottom style=" height: 30px;">
       <div class="mx-auto" style="width:170px">Copyright 2017 by kitae</div>
       <a href="#top" class="badge badge-pill badge-primary float-right">탑으로</a>
     </div>
     `
   },
-  loginForm:function (params) {
+  loginForm: function (params) {
     return `<!DOCTYPE html>
     <html lang="ko">
     
@@ -170,22 +174,44 @@ module.exports = {
     
     </html>`
   },
-  t_head : function () {
-    return`
+  t_head: function () {
+    return `
     `;
   },
-  pagination : function () {
-    return `    <ul class="pagination pagination-sm justify-content-center ">
-    <li class="page-item"><a class="page-link" href="/">1</a></li>
-    <li class="page-item"><a class="page-link" href="/2">2</a></li>
-    <li class="page-item"><a class="page-link" href="/3">3</a></li>
-    <li class="page-item"><a class="page-link" href="/4">4</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+  pagination: function (pageNo, startPage, endPage, totalPage) {
+    let leftPage = (pageNo > 10) ? `/bbs/list/${Math.floor(pageNo / 10) * 10}` : `/bbs/list/${startPage}` ;
+    let pages = `<li class="page-item">
+                    <a class="page-link active" href="${leftPage}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span></a>
+                </li>`;
+    for (let page = startPage; page <= endPage; page++) {
+      if (page === pageNo)
+        pages += `
+        <li class="page-item active" aria-current="page">
+                        <span class="page-link">
+                            ${page}<span class="sr-only">(current)</span>
+                        </span>
+                    </li>
+        `;
+      else
+        pages += `
+          <li class="page-item"><a class="page-link" href="/bbs/list/${page}">${page}</a></li>
+          `;
+
+    }
+    let rightPage = (endPage < totalPage) ? `/bbs/list/${Math.ceil(pageNo / 10) * 10 + 1}` : `/bbs/list/${endPage}`;
+    pages += `<li class="page-item">
+                        <a class="page-link" href="${rightPage}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a>
+                    </li>`;
+    return `   <ul class="pagination pagination-sm justify-content-center ">
+    ${pages}
     <a href="/bbs/create" class="kboard-default-button-small">글쓰기</a>
+    </ul>
 `;
   },
-  createForm : function () {
-    return`
+  createForm: function () {
+    return `
     <body>
           <h1 class="text-center">추가</h1>
           <hr>
@@ -213,12 +239,11 @@ module.exports = {
         </body>
     `;
   },
-  showBoard : function (results,uid) {
+  showBoard: function (results, uid) {
     let result = results[0];
     let txtBox = result.content
-    console.log(txtBox);
     let line = txtBox.replace(/(\n|\r\n)/g, '<br>');
-    return`
+    return `
     <div class="row">
     <div class="col-xs-2 col-md-2"></div>
     <div class="col-xs-9 col-md-9">
@@ -251,10 +276,9 @@ module.exports = {
           <br>
           <tr>
             <td colspan="4" class="text-center">
-              <input type="button" class="btn btn-success" value="답글 쓰기" onclick="location.href='#'">
-              <input type="button" class="btn btn-warning" value="수정하기" onclick="location.href='/bbs/update/${result.bid}/${result.uid}'">
-              <input type="button" class="btn btn-danger" value="삭제하기" onclick="location.href='/bbs/delete/${result.bid}/${result.uid}'">
-              <input type="button" class="btn btn-primary" value="목록보기" onclick="location.href='/bbs/list'">
+              <input type="button" class="btn btn-light" value="수정하기" onclick="location.href='/bbs/update/${result.bid}/${result.uid}'">
+              <input type="button" class="btn btn-light" value="삭제하기" onclick="location.href='/bbs/delete/${result.bid}/${result.uid}'">
+              <input type="button" class="btn btn-light" value="목록보기" onclick="location.href='/bbs/list/1'">
             </td>
           </tr>
         </table>
@@ -263,7 +287,7 @@ module.exports = {
   </div>
     `;
   },
-  updateForm : function (result,uid) {
+  updateForm: function (result, uid) {
     return `<body>
     <h1 class="text-center">수정</h1>
     <hr>
@@ -295,8 +319,8 @@ module.exports = {
     </div>
   </body>`;
   },
-  replyForm : function (html) {
-    return`<div class="container">
+  replyForm: function (html) {
+    return `<div class="container">
     <form id="commentForm" name="commentForm" method="post">
     <br><br>
         <div>
@@ -322,8 +346,8 @@ module.exports = {
     </form>
 </div>`
   },
-  updateUserForm : function (result,uid) {
-    return`
+  updateUserForm: function (result, uid) {
+    return `
     <div class="container" style="margin-top: 90px;">  
     <div class="row">
         <div class="col-12">
@@ -332,7 +356,7 @@ module.exports = {
         </div>
         <div class="col-3"></div>
         <div class="col-6">
-            <form action="/user/register" method="post">
+            <form action="/user/update" method="post">
                 <table class="table table-borderless">
                     <tr>
                         <td><label for="uid">사용자 ID</label></td>
@@ -361,7 +385,7 @@ module.exports = {
                     <tr>
                         <td colspan="2" style="text-align: center;">
                             <input class="btn btn-primary" type="submit" value="제출">
-                            <input button class="btn btn-secondary" type="reset" value="취소" onclick = "location href = '/bbs/list'">
+                            <input button class="btn btn-secondary" type="reset" value="취소" onclick = "location href = '/bbs/list/1'">
                         </td>
                     </tr>
                 </table>

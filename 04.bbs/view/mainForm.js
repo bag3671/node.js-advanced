@@ -2,16 +2,20 @@ const templete = require('./templete');
 const express = require('express');
 const fs = require('fs');
 const app = express();
+const moment = require('moment');
 app.use(express.static(__dirname + '/public'));
 
 module.exports = {
-  mainForm: function (uname, rows, uid) {
+  mainForm: function (uname, rows, uid,pageNo,startPage,endPage,totalPage) {
+    var moment = require('moment');
+    var date = moment().format('YYYY-MM-DD');
+    console.log(date);
     let html = '';
     for (let row of rows) {
       html += `
       <tr>
         <td>${row.bid}</td>
-        <td><a href = "/bbs/list/${row.bid}/${uid}">${row.title}</a></td>
+        <td><a href = "/bbs/${row.bid}/${uid}">${row.title}</a></td>
         <td>${row.uid}</td>
         <td>${row.modTime}</td>
         <td>${row.viewCount}</td>
@@ -40,7 +44,7 @@ module.exports = {
     </tbody>
     </table>    
     </div>
-    ${templete.pagination()}   
+    ${templete.pagination(pageNo,startPage,endPage,totalPage)}   
     ${templete.footer()}
     </body>
     </html>
@@ -58,11 +62,12 @@ module.exports = {
     </html>
     `;
   },
-  BoardInfo: function (results, uname, uid, rows) {
+  BoardInfo: function (results, uname, uid, rows, bid) {
+    
     let html = '';
     for (row of rows) {
-      html += `<tr><td><span class="badge badge-primary"><h5>${row.uid} : </h5></span>${row.content}
-      <button type="button" class="btn btn-primary float-right">삭제</button></td></tr>
+      html += `<tr><td><span class="badge badge-light"><h5>${row.uid} </h5></span>${row.content}
+      <input type="button" class="btn btn-light float-right btn-sm" value = "삭제" onclick="location.href='/bbs/reply/delete/${bid}/${uid}/${row.rid}'"></td></tr>
       `;}
     return `
     ${templete.header2()}
