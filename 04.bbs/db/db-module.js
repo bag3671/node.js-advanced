@@ -27,7 +27,7 @@ module.exports = {
   },
   getUserInfo: function (uid, callback) {
     let conn = this.getConnection();
-    let sql = `select * from users where uid like ? and isDeleted = 0`;
+    let sql = `select uid,uname,tel,email,date_format(regDate,'%Y-%m-%d %r')as regDate,pwd from users where uid like ? and isDeleted = 0`;
     conn.query(sql, uid, (error, results, fields) => {
       if (error)
         console.log(error);
@@ -125,7 +125,7 @@ module.exports = {
     conn.end();
   },
   getBbs: function (params, callback) {
-    let sql = `select bid,uid,title,content,date_format(modTime, '%Y-%m-%d')AS modTime,viewCount from bbs where bid = ?
+    let sql = `select bid,uid,title,content,DATE_FORMAT(modTime, '%Y-%m-%d')AS modTime,viewCount from bbs where bid = ?
     
     `;
     let conn = this.getConnection();
@@ -215,7 +215,7 @@ module.exports = {
   },
   getReply : function (bid, callback) {
     let sql = `
-    SELECT * FROM reply where bid = ? and isDeleted = 0    
+    SELECT rid,bid,uid,content,date_format(regtime,'%Y-%m-%d %r')as regtime FROM reply where bid = ? and isDeleted = 0    
     `;
     let conn = this.getConnection();
     conn.query(sql, bid, (error,resultRp,fields) => {
@@ -225,12 +225,12 @@ module.exports = {
     });
     conn.end();
   },
-  getReply2 : function (bid, callback) {
+  getReply2 : function (rid, callback) {
     let sql = `
     SELECT * FROM reply where rid = ? and isDeleted = 0    
     `;
     let conn = this.getConnection();
-    conn.query(sql, bid, (error,resultRp,fields) => {
+    conn.query(sql, rid, (error,resultRp,fields) => {
       if (error)
         console.log(error);
       callback(resultRp);
@@ -301,7 +301,7 @@ module.exports = {
     let conn = this.getConnection();
     let sql = `
     SELECT b.bid, b.uid, u.uname, b.title, b.content, 
-    b.modTime, b.viewCount, b.replyCount
+    date_format(b.modTime, '%Y-%m-%d')AS modTime,date_format(b.modTime, '%H:%i:%s')AS modTime2, b.viewCount, b.replyCount
     FROM bbs AS b
     JOIN users AS u
     ON b.uid=u.uid
@@ -356,6 +356,16 @@ module.exports = {
         console.log(error);
       callback();
     })
-  }
+  },
+  getUserList: function (callback) {
+    let conn = this.getConnection();
+    let sql = `select uid,uname,ifnull(tel,'없음')as tel,ifnull(email,'없음')as email,date_format(regDate,'%Y-%m-%d %r')as regDate from users where isDeleted = 0`;
+    conn.query(sql, (error, results, fields) => {
+      if (error)
+        console.log(error);
+      callback(results);
+    });
+    conn.end();
+  },
 
 }

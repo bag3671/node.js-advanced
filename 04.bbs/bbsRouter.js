@@ -56,6 +56,7 @@ bRouter.get('/:bid/:uid',ut.isLoggedin, (req, res) => {
   let uid = req.params.uid
   dm.getBbs(bid, results => {
     dm.getReply(bid,resultRp=>{
+      console.log(resultRp);
       let html = mainForm.BoardInfo(results, uname, uid, resultRp,bid);
       res.send(html);
       dm.increaseViewCount(bid,result=>{})
@@ -96,7 +97,7 @@ bRouter.get('/delete/:bid/:uid', ut.isLoggedin, (req, res) => {
   let suid = req.session.uid
   if (uid === suid) {
     dm.deleteBbs(bid, () => {
-      res.redirect(`/bbs/list`)
+      res.redirect(`/bbs/list/1`)
     })
   } else {
     const view = require('./view/alertMessage');
@@ -124,7 +125,6 @@ bRouter.get('/reply/delete/:bid/:uid/:rid',ut.isLoggedin,(req,res)=>{
   let uidLogin = req.session.uid
   let rid = req.params.rid
   dm.getReply2(rid,result=>{
-    console.log(result[0]);
     if (uidLogin === result[0].uid) {
       dm.deleteReply(rid,()=>{
         dm.decreaseReplyCount(bid,()=>{
@@ -145,7 +145,7 @@ bRouter.post(`/search`,ut.isLoggedin,(req,res)=>{
     const view = require('./view/mainForm')
     let uname = req.session.uname
     let uid = req.session.uid
-    let html = view.mainForm(uname,rows,uid)
+    let html = view.searchForm(uname,rows,uid)
     res.send(html);
   })
 })

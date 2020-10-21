@@ -36,8 +36,15 @@ module.exports = {
     `
   },
   top: function (uname, uid) {
+    let managementButton = '';
+    console.log(uid);
+    if (uid === 'admin') {
+      managementButton += `
+      <h5><a class="nav-link ml-2 text-dark" href="/user/management">사용자관리</a></h4>
+      `;
+    }
     return `
-  <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+  <nav class="navbar navbar-expand-lg bg-light navbar-light fixed-top">
     <!-- Brand/logo -->
     <a class="navbar-brand" href="#">
       <img src="/img/logo.jpg" alt="logo" style="height:40px;margin-left: 40px;margin-right: 50px;">
@@ -46,24 +53,39 @@ module.exports = {
     <!-- Links -->
     <ul class="nav mx-auto">
       <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/bbs/list/1">홈</a></h4>
+      <!--<h4><a class="nav-link ml-2 text-light" href="/bbs/list/1">홈</a></h4>-->
+      <a class="navbar-brand" href="/bbs/list/1">
+        <img src="/img/home.png" alt="home" style="height:40px;margin-right: 10px;" >
+      </a>
       </li>
       <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
+      <!--<h4><a class="nav-link ml-2 text-light" href="/bbs/create">글쓰기</a></h4>-->
+        <a class="navbar-brand" href="/bbs/create">
+          <img src="/img/pen.png" alt="write" style="height:40px;margin-right: 10px;" >
+        </a>
       </li>
       <li class="nav-item">
-        <h4><a class="nav-link ml-2 text-light" href="/logout" >로그아웃</a></h4>
+      <!--<h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>-->
+        <a class="navbar-brand" href="/user/update/${uid}">
+          <img src="/img/information.png" alt="information" style="height:40px;margin-right: 10px;" >
+        </a>
+      </li>
+      <li class="nav-item">
+      <!--<h4><a class="nav-link ml-2 text-light" href="/logout" >로그아웃</a></h4>-->
+        <a class="navbar-brand" href="/logout">
+          <img src="/img/logout.png" alt="logout" style="height:40px;" >
+        </a>
       </li>
     </ul>
-    <span class="navbar-text mx-auto text-light">
+    <span class="navbar-text mx-auto text-dark">
       <h4>${uname}님 반갑습니다</h4>
     </span>
+    ${managementButton}
     <form class="form-inline" action="/bbs/search" method="POST">
       <input class="form-control mr-sm-2" type="text" name = "title" id = "title" placeholder="Search Title">
       <button class="btn btn-success" type="submit">Search</button>
     </form>
-    <a href="https://www.google.com/search?q=%EB%82%A0%EC%94%A8&oq=%EB%82%A0%EC%94%A8&aqs=chrome..69i57j0l5j69i61l2.2025j1j4&sourceid=chrome&ie=UTF-8"
-      target="_black"><i class="fas fa-umbrella fa-5x float-right text-light"></i></a>
+    
   </nav>
     `
   },
@@ -79,6 +101,9 @@ module.exports = {
     <ul class="nav mx-auto">
       <li class="nav-item">
         <h4><a class="nav-link ml-2 text-light" href="/bbs/list/1">홈</a></h4>
+      </li>
+      <li class="nav-item">
+        <h4><a class="nav-link ml-2 text-light" href="/bbs/create">글쓰기</a></h4>
       </li>
       <li class="nav-item">
         <h4><a class="nav-link ml-2 text-light" href="/user/update/${uid}">개인정보 수정</a></h4>
@@ -97,7 +122,7 @@ module.exports = {
   },
   footer: function () {
     return `
-    <div class="navbar navbar-expand navbar-light bg-light fixed-bottom style=" height: 30px;">
+    <div class="navbar navbar-expand navbar-light bg-light fixed-bottom" height: 30px;">
       <div class="mx-auto" style="width:170px">Copyright 2017 by kitae</div>
       <a href="#top" class="badge badge-pill badge-primary float-right"></a>
     </div>
@@ -208,9 +233,7 @@ module.exports = {
     ${pages}
     <br>
     </ul>
-    
-    <button type = "button" class="btn btn-outline-primary float-right" onclick = "location.href = '/bbs/create'">글쓰기</button>
-`;
+    `;
   },
   createForm: function () {
     return `
@@ -330,7 +353,7 @@ module.exports = {
                 <span><strong>Comments</strong></span> <span id="cCnt"></span>
             </div>
             <div>
-                <table class="table"> 
+                <table> 
                     ${html}
                     <tr>
                         <td>
@@ -366,11 +389,11 @@ module.exports = {
                     </tr>
                     <tr>
                         <td><label for="pwd">패스워드</label></td>
-                        <td><input type="password" name="pwd" id="pwd"></td>
+                        <td><input type="password" name="pwd" id="pwd"placeholder="비밀번호를 입력하세요"></td>
                     </tr>
                     <tr>
                         <td><label for="pwd2">패스워드 확인</label></td>
-                        <td><input type="password" name="pwd2" id="pwd2"></td>
+                        <td><input type="password" name="pwd2" id="pwd2"placeholder="비밀번호를 입력하세요"></td>
                     </tr>
                     <tr>
                         <td><label for="uname">이름</label></td>
@@ -399,5 +422,47 @@ module.exports = {
       </div>
     </div>
     `;
+  },
+  userInfoForm: function (result,uid) {
+    return `
+    <div class="row">
+    <div class="col-xs-3 col-md-3"></div>
+    <div class="col-xs-5 col-md-5 text-center">
+      <h2 class="text-center">게시글 보기</h2>
+      <p>&nbsp;</p>
+      <div class="table table-responsive">
+        <table class="table">
+          <tr>
+            <th class="">UID</th>
+            <td>${result.uid}</td>
+          </tr>
+          <tr>
+            <th class="success">이름</th>
+            <td>${result.uname}</td>
+          </tr>
+          <tr>
+            <th class="success">등록일</th>
+            <td>${result.regTime}</td>
+          </tr>
+          <tr>
+            <th class="success">Tel</th>
+            <td>${result.tel}</td>
+          </tr>
+          <tr>
+            <th class="success">E-MAIL</th>
+            <td>${result.email}</td>
+          </tr>
+         
+          <br>
+          <tr>
+            <td colspan="3" class="text-center">
+              <input type="button" class="btn btn-light" value="탈퇴시키기" onclick="location.href='/user/delete/${uid}'">
+              <input type="button" class="btn btn-light" value="목록보기" onclick="location.href='/user/management'">
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>`;
   }
 }
