@@ -11,9 +11,16 @@ const ut = require('./view/util')
 const dm = require('./db/db-module');
 const test = require('./view/mainForm');
 const util = require('./view/util');
+const multer = require('multer')
+const path = require('path')
+const fileUpload = require('express-fileupload')
+const multipart = require('connect-multiparty');
 
 
+
+let upload = multer({dest: './uploads/'})
 const app = express();
+app.use(multipart({ uploadDir: __dirname + '/public/uploads' }));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/popper', express.static(__dirname + '/node_modules/@popperjs/core/dist/umd'));

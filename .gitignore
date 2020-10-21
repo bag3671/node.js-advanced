@@ -6,6 +6,7 @@ package-lock.json
 /02.express/public/
 /04.bbs/public/fontawesome-free-5.15.1-web
 /04.bbs/public/img
+/04.bbs/public/uploads
 mysql.json
 /tmp
 sessions/

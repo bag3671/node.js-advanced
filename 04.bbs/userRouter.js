@@ -4,8 +4,11 @@ const dm = require('./db/db-module');
 const mainForm = require('./view/mainForm');
 const templete = require('./view/templete');
 const ut = require('./view/util')
+const multer = require('multer')
 
 const uRouter = express.Router();
+let upload = multer({dest: './uploads/'})
+
 uRouter.get('/register', (req, res) => {
   const view = require('./view/userRegister');
   let html = view.register();
@@ -13,13 +16,18 @@ uRouter.get('/register', (req, res) => {
 });
 
 uRouter.post('/register', (req, res) => {
-  let uid = req.body.uid;
+  console.log("post")
+  console.log(req.files.picture.path)
+  
+ 
+  /* let uid = req.body.uid;
   let pwd = req.body.pwd;
   let pwd2 = req.body.pwd2;
   let uname = req.body.uname;
   let email = req.body.email;
   let tel = req.body.tel;
   let pwdHash = ut.ganerateHash(pwd)
+  
   if (pwd2 === pwd) {
     dm.registUser(uid, pwdHash, uname, email, tel)
     const view = require('./view/alertMessage');
@@ -29,7 +37,7 @@ uRouter.post('/register', (req, res) => {
     const view = require('./view/alertMessage');
     let html = view.alertMsg('login 실패: 패스워드가 틀렸습니다.', '/user/register')
     res.send(html);
-  }
+  } */
 
 });
 uRouter.get('/update/:uid', ut.isLoggedin,(req, res) => {

@@ -12,7 +12,7 @@ module.exports = {
           </div>
           <div class="col-3"></div>
           <div class="col-6">
-              <form action="/user/register" method="post">
+              <form action="/user/register" method="post"enctype="multipart/form-data">
                   <table class="table table-borderless">
                       <tr>
                           <td><label for="uid">사용자 ID</label></td>
@@ -39,10 +39,16 @@ module.exports = {
                           <td><input type="tel" name="tel" id="tel"></td>
                       </tr>
                       <tr>
-                          <td colspan="2" style="text-align: center;">
-                              <input class="btn btn-primary" type="submit" value="제출">
-                              <input class="btn btn-secondary" type="reset" value="취소">
-                          </td>
+                        <td><div class="form-group">
+                          <label for="picture">프로필 사진</label>
+                          <input type="file" class="form-control-file" name="picture" id = "picture">
+                        </div></td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="text-align: center;">
+                          <input class="btn btn-primary" type="submit" value="제출">
+                          <input class="btn btn-secondary" type="reset" value="취소">
+                        </td>
                       </tr>
                   </table>
               </form>
