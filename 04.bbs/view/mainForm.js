@@ -174,23 +174,30 @@ module.exports = {
     </html>
     `;
   },
-  BoardInfo: function (results, uname, uid, rows, bid) {
+  BoardInfo: function (results, uname, uid, rows,) {
     
     let html = '';
     for (row of rows) {
       if (row.uid === uid) {
-        html += `<tr><td><div class = "float-right text-dark border border-dark"style="background-color:#00FF00"><span class="badge "><h5>${row.uid} </h5></span><small>${row.regtime}</small><br>${row.content}</div></td></tr>
+        html += `<tr><td><div class = "float-right text-dark  "style="background-color:rgb(255, 255, 240)"><span class="badge "><h5>${row.uid} </h5></span><small>${row.regtime}</small><br>${row.content}</div></td></tr>
         `;
       }else{
-        html += `<tr><td><div class = "float-left text-dark border border-dark"style="background-color:#7FFFD4"><span class="badge "><h5>${row.uid} </h5></span><small>${row.regtime}</small><br>${row.content}<div></td></tr>
+        html += `<tr><td><div class = "float-left text-dark  "style="background-color:rgb(213, 255, 255)"><span class="badge "><h5>${row.uid} </h5></span><small>${row.regtime}</small><br>${row.content}<div></td></tr>
         `;}
+      }
+      let buttonBox = '';
+      if (results[0].uid === uid) {
+        buttonBox += `
+          <input type="button" class="btn btn-light" value="수정하기" onclick="location.href='/bbs/update/${results.bid}/${results.uid}'">
+          <input type="button" class="btn btn-light" value="삭제하기" onclick="location.href='/bbs/delete/${results.bid}/${results.uid}'">
+        `;
       }
      
     return `
     ${templete.header2()}
     ${templete.top(uname, uid)}
     <body class="pt-auto pb-5">
-    ${templete.showBoard(results, uid)}
+    ${templete.showBoard(results,buttonBox)}
     ${templete.replyForm(html)}
     ${templete.footer()}
     </body>

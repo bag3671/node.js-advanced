@@ -182,7 +182,6 @@ module.exports = {
     let conn = getConnection();
     conn.query(sql, (error, results, fields) => {
       totalPagecount = data[0].cur;
-      console.log("현재 페이지 : " + curPage, "전체 페이지 : " + totalPagecount);
       if (totalPagecount < 0) 
         totalPagecount = 0
       let totalPage = Math.ceil(totalPagecount / page_size); //전체페이지수

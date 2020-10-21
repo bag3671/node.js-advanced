@@ -37,7 +37,6 @@ module.exports = {
   },
   top: function (uname, uid) {
     let managementButton = '';
-    console.log(uid);
     if (uid === 'admin') {
       managementButton += `
       <h5><a class="nav-link ml-2 text-dark" href="/user/management">사용자관리</a></h4>
@@ -264,7 +263,7 @@ module.exports = {
         </body>
     `;
   },
-  showBoard: function (results, uid) {
+  showBoard: function (results,buttonBox) {
     let result = results[0];
     let txtBox = result.content
     let line = txtBox.replace(/(\n|\r\n)/g, '<br>');
@@ -301,8 +300,7 @@ module.exports = {
           <br>
           <tr>
             <td colspan="4" class="text-center">
-              <input type="button" class="btn btn-light" value="수정하기" onclick="location.href='/bbs/update/${result.bid}/${result.uid}'">
-              <input type="button" class="btn btn-light" value="삭제하기" onclick="location.href='/bbs/delete/${result.bid}/${result.uid}'">
+            ${buttonBox}
               <input type="button" class="btn btn-light" value="목록보기" onclick="location.href='/bbs/list/1'">
             </td>
           </tr>

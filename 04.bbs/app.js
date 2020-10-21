@@ -44,7 +44,6 @@ app.post('/login',(req, res) => {
   let pwd = req.body.pwd
   let pwdHash = ut.ganerateHash(pwd)
   dm.getUserInfo(uid, result => {
-    console.log(result);
     if (result === undefined) {
       const view = require('./view/alertMessage');
       let html = view.alertMsg(`로그인 실패: ${uid}이/가 없습니다. 다시한번 uid를 확인해주세요`, '/login')

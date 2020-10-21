@@ -56,7 +56,6 @@ bRouter.get('/:bid/:uid',ut.isLoggedin, (req, res) => {
   let uid = req.params.uid
   dm.getBbs(bid, results => {
     dm.getReply(bid,resultRp=>{
-      console.log(resultRp);
       let html = mainForm.BoardInfo(results, uname, uid, resultRp,bid);
       res.send(html);
       dm.increaseViewCount(bid,result=>{})

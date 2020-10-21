@@ -96,7 +96,6 @@ uRouter.get('/uid/:uid',ut.isLoggedin,(req,res)=>{
 })
 uRouter.get('/delete/:uid',ut.isLoggedin,(req,res)=>{
   let uid = req.params.uid
-  console.log();
   dm.deleteUser(uid,()=>{
     res.redirect('/user/management')
   })
