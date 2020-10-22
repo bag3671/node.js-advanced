@@ -94,7 +94,6 @@ app.post('/update', ut.isLoggedin, (req, res) => {
   let uid = req.body.uid;
   let pwd = req.body.pwd;
   let pwd2 = req.body.pwd2;
-  console.log(pwd, pwd2);
   if (pwd === pwd2) {
     let pwdHash = ut.ganerateHash(pwd)
     let params =[pwdHash, uid];

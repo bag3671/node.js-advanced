@@ -5,9 +5,19 @@ const mainForm = require('./view/mainForm');
 const templete = require('./view/templete');
 const ut = require('./view/util')
 const multer = require('multer')
+const path = require('path')
 
 const uRouter = express.Router();
-let upload = multer({dest: './uploads/'})
+let upload = multer({
+  storage : multer.diskStorage({
+    destination : function (req,file,cb) {
+      cb(null,__dirname +'/./public/uploads/');
+    },
+    filename:function (req,file,cb) {
+      cb(null,new Date().toISOString().replace(/[-:\.A-Z]/g, '') + '_' + file.originalname);
+    }
+  }),  
+});
 
 uRouter.get('/register', (req, res) => {
   const view = require('./view/userRegister');
@@ -15,32 +25,34 @@ uRouter.get('/register', (req, res) => {
   res.send(html);
 });
 
-uRouter.post('/register', (req, res) => {
-  console.log("post")
-  console.log(req.files.picture.path)
-  
- 
-  /* let uid = req.body.uid;
+uRouter.post('/register', upload.single('photo'), (req, res) => {
+  let uid = req.body.uid;
   let pwd = req.body.pwd;
   let pwd2 = req.body.pwd2;
   let uname = req.body.uname;
   let email = req.body.email;
   let tel = req.body.tel;
   let pwdHash = ut.ganerateHash(pwd)
-  
-  if (pwd2 === pwd) {
-    dm.registUser(uid, pwdHash, uname, email, tel)
-    const view = require('./view/alertMessage');
-    let html = view.alertMsg('로그인 해주세요', '/login')
+  if (uid ===``||pwd===``||uname===``||req.file===undefined) {
+    const view = require('./view/alertMessage')
+    let html = view.alertMsg('입력된 정보를 확인해주세요')
     res.send(html);
-  } else {
-    const view = require('./view/alertMessage');
-    let html = view.alertMsg('login 실패: 패스워드가 틀렸습니다.', '/user/register')
-    res.send(html);
-  } */
-
+  }else{
+    if (pwd2 === pwd) {
+      let photo = req.file.filename
+      dm.registUser(uid, pwdHash, uname, email, tel, photo)
+      const view = require('./view/alertMessage');
+      let html = view.alertMsg2('로그인 해주세요','/login')
+      res.send(html);
+    } else {
+      const view = require('./view/alertMessage');
+      let html = view.alertMsg('login 실패: 패스워드가 틀렸습니다.')
+      res.send(html);
+    } 
+  }
+ 
 });
-uRouter.get('/update/:uid', ut.isLoggedin,(req, res) => {
+uRouter.get('/update/:uid',upload.single('photo'), ut.isLoggedin,(req, res) => {
   let uname = req.session.uname;
   let uid = req.params.uid
   dm.getUserInfo(uid, result => {
@@ -50,23 +62,39 @@ uRouter.get('/update/:uid', ut.isLoggedin,(req, res) => {
   })
 })
 
-uRouter.post('/update',ut.isLoggedin,(req,res)=>{
+uRouter.post('/update',upload.single('photo'),ut.isLoggedin,(req,res)=>{
   let uname = req.body.uname
   let pwd = req.body.pwd
   let pwd2 = req.body.pwd2
   let tel = req.body.tel
   let email = req.body.email
   let uid = req.body.uid
-  if (pwd !== pwd2 || pwd === '') {
-    const view = require('./view/alertMessage');
-    let html = view.alertMsg('패스워드를 확인하세요', `/user/update/${uid}`);
-    res.send(html);
-  }else{  //패스워드 입력이 잘못된 경우
-    let pwdHash = ut.ganerateHash(pwd)
-    let params = [uname, pwdHash, tel, email, uid]
-    dm.updateUser(params, ()=>{
-      res.redirect('/bbs/list/1');
-    });
+  let file = req.file
+  if (file === undefined) {
+    if (pwd !== pwd2 || pwd === '') {
+      const view = require('./view/alertMessage');
+      let html = view.alertMsg('패스워드를 확인하세요', `/user/update/${uid}`);
+      res.send(html);
+    }else{  //패스워드 입력이 잘못된 경우
+      let pwdHash = ut.ganerateHash(pwd)
+      let params = [uname, pwdHash, tel, email, uid]
+      dm.updateUser(params, ()=>{
+        res.redirect('/bbs/list/1');
+      });
+    }
+  }else{
+    if (pwd !== pwd2 || pwd === '') {
+      const view = require('./view/alertMessage');
+      let html = view.alertMsg('패스워드를 확인하세요', `/user/update/${uid}`);
+      res.send(html);
+    }else{  //패스워드 입력이 잘못된 경우
+      let photo = file.filename
+      let pwdHash = ut.ganerateHash(pwd)
+      let params = [uname, pwdHash, tel, email,photo, uid]
+      dm.updateUserPhoto(params, ()=>{
+        res.redirect('/bbs/list/1');
+      });
+    }
   }
 })
 
@@ -95,8 +123,8 @@ uRouter.get('/management',ut.isLoggedin,(req,res)=>{
 
 uRouter.get('/uid/:uid',ut.isLoggedin,(req,res)=>{
   let uid = req.params.uid
+  let uname = req.session.uname
   dm.getUserInfo(uid,result=>{
-    let uname = result.uname
     const view = require('./view/mainForm')
       let html = view.userInfo(result,uname,uid)
       res.send(html)

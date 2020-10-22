@@ -27,7 +27,8 @@ module.exports = {
   },
   getUserInfo: function (uid, callback) {
     let conn = this.getConnection();
-    let sql = `select uid,uname,tel,email,date_format(regDate,'%Y-%m-%d %r')as regDate,pwd from users where uid like ? and isDeleted = 0`;
+    let sql = `select uid,uname,if(tel is NULL OR tel = '','없음',tel)AS tel,if(email is NULL OR email = '','없음',email)AS email,date_format(regDate,'%Y-%m-%d %r')as regDate,pwd,photo,
+    if(isDeleted>0,'탈퇴','사용자') AS isDeleted from users where uid like ? `;
     conn.query(sql, uid, (error, results, fields) => {
       if (error)
         console.log(error);
@@ -87,12 +88,12 @@ module.exports = {
     });
     conn.end();
   },
-  registUser: function (uid, pwd, uname, email, tel) {
+  registUser: function (uid, pwd, uname, email, tel,photo) {
     let conn = this.getConnection();
     let sql = `
-    insert into users(uid, pwd, uname, email, tel) VALUE(?, ?, ?,?,?);
+    insert into users(uid, pwd, uname, email, tel,photo) VALUE(?, ?, ?,?,?,?);
     `;
-    let params = [uid, pwd, uname, email, tel];
+    let params = [uid, pwd, uname, email, tel, photo];
     conn.query(sql, params, (error, fields) => {
       if (error)
         console.log(error);
@@ -125,7 +126,7 @@ module.exports = {
     conn.end();
   },
   getBbs: function (params, callback) {
-    let sql = `select bid,uid,title,content,DATE_FORMAT(modTime, '%Y-%m-%d')AS modTime,viewCount from bbs where bid = ?
+    let sql = `select bid,uid,title,content,DATE_FORMAT(modTime, '%Y-%m-%d')AS modTime,DATE_FORMAT(modTime, '%Y-%m-%d %r')AS modTime2,viewCount from bbs where bid = ?
     
     `;
     let conn = this.getConnection();
@@ -159,6 +160,18 @@ module.exports = {
   updateUser: function (params, callback) {
     let sql = `
     update users set uname = ?, pwd = ?,tel = ?, email = ? where uid = ?
+    `;
+    let conn = this.getConnection();
+    conn.query(sql, params, (error, fields) => {
+      if (error)
+        console.log(error);
+      callback();
+    });
+    conn.end();
+  },
+  updateUserPhoto: function (params, callback) {
+    let sql = `
+    update users set uname = ?, pwd = ?,tel = ?, email = ?,photo = ? where uid = ?
     `;
     let conn = this.getConnection();
     conn.query(sql, params, (error, fields) => {
@@ -358,7 +371,7 @@ module.exports = {
   },
   getUserList: function (callback) {
     let conn = this.getConnection();
-    let sql = `select uid,uname,ifnull(tel,'없음')as tel,ifnull(email,'없음')as email,date_format(regDate,'%Y-%m-%d %r')as regDate from users where isDeleted = 0`;
+    let sql = `select uid,uname,if(tel is NULL OR tel = '','없음',tel)AS tel,if(email is NULL OR email = '','없음',email)AS email,date_format(regDate,'%Y-%m-%d %r')as regDate,if(isDeleted>0,'탈퇴','사용자') AS isDeleted from users`;
     conn.query(sql, (error, results, fields) => {
       if (error)
         console.log(error);

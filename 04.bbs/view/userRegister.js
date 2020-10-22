@@ -15,19 +15,19 @@ module.exports = {
               <form action="/user/register" method="post"enctype="multipart/form-data">
                   <table class="table table-borderless">
                       <tr>
-                          <td><label for="uid">사용자 ID</label></td>
+                          <td><label for="uid">*사용자 ID</label></td>
                           <td><input type="text" name="uid" id="uid"></td>
                       </tr>
                       <tr>
-                          <td><label for="pwd">패스워드</label></td>
+                          <td><label for="pwd">*패스워드</label></td>
                           <td><input type="password" name="pwd" id="pwd"></td>
                       </tr>
                       <tr>
-                          <td><label for="pwd2">패스워드 확인</label></td>
+                          <td><label for="pwd2">*패스워드 확인</label></td>
                           <td><input type="password" name="pwd2" id="pwd2"></td>
                       </tr>
                       <tr>
-                          <td><label for="uname">이름</label></td>
+                          <td><label for="uname">*이름</label></td>
                           <td><input type="text" name="uname" id="uname"></td>
                       </tr>
                       <tr>
@@ -40,8 +40,8 @@ module.exports = {
                       </tr>
                       <tr>
                         <td><div class="form-group">
-                          <label for="picture">프로필 사진</label>
-                          <input type="file" class="form-control-file" name="picture" id = "picture">
+                          <label for="picture">*프로필 사진</label>
+                          <input type="file" class="form-control-file" name="photo" id = "photo">
                         </div></td>
                       </tr>
                       <tr>

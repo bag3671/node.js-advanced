@@ -39,7 +39,9 @@ module.exports = {
     let managementButton = '';
     if (uid === 'admin') {
       managementButton += `
-      <h5><a class="nav-link ml-2 text-dark" href="/user/management">사용자관리</a></h4>
+      <a class="navbar-brand" href="/user/management">
+        <img src="/img/users.png" alt="users" style="height:40px;margin-right: 10px;" >
+      </a>
       `;
     }
     return `
@@ -263,36 +265,30 @@ module.exports = {
         </body>
     `;
   },
-  showBoard: function (results,buttonBox) {
+  showBoard: function (results,buttonBox,countRows) {
     let result = results[0];
     let txtBox = result.content
     let line = txtBox.replace(/(\n|\r\n)/g, '<br>');
     return `
-    <div class="row">
+    <div class="row pt-5">
     <div class="col-xs-2 col-md-2"></div>
     <div class="col-xs-9 col-md-9">
-      <h2 class="text-center">게시글 보기</h2>
-      <p>&nbsp;</p>
-      <div class="table table-responsive">
+    <p>&nbsp;</p>
+    <h2 class="text-center">게시글 보기</h2>
+      <div class="table table-borderless">
         <table class="table">
           <tr>
-            <th class="">글번호</th>
-            <td>${result.bid}</td>
-            <th class="">조회수</th>
-            <td>${result.viewCount}</td>
+            <th><h3>${result.title}</h3></th>
+            <td colspan = "3"class = "text-right"><h3>${result.uid}</h3></td>
           </tr>
-          <tr>
-            <th class="success">작성자</th>
-            <td>${result.uid}</td>
-            <th class="success">작성일</th>
-            <td>${result.modTime}</td>
+          <tr><td class="">글번호 : ${result.bid} | ${result.modTime2}</td>
+            <td></td>
+            <td></td>
+            <td class = "text-right">조회 : ${result.viewCount} | 댓글 : ${countRows}</td>
           </tr>
+         
           <tr>
-            <th class="success" colspan = "1">제목</th>
-            <td colspan = "3">${result.title}</td>
-          </tr>
-          <tr>
-            <th class="success text-center" colspan="4">글 내용</th>
+            <th class="success text-center" colspan="4"><hr></th>
             </tr>
             <tr>
             <td colspan="4" id = "result.content">${line}</td>
@@ -300,11 +296,16 @@ module.exports = {
           <br>
           <tr>
             <td colspan="4" class="text-center">
+            <div class = "float-right">
             ${buttonBox}
-              <input type="button" class="btn btn-light" value="목록보기" onclick="location.href='/bbs/list/1'">
+              <a href="/bbs/list/1">
+                <img src="/img/list.png" alt="list" style="height:40px;margin-right: 10px;" >
+              </a>
+              </div>
             </td>
           </tr>
         </table>
+        <hr>
       </div>
     </div>
   </div>
@@ -374,20 +375,21 @@ module.exports = {
     <div class="container" style="margin-top: 90px;">  
     <div class="row">
         <div class="col-12">
-            <h3>개인정보 수정</h3>
+            <h3 class="text-center">개인정보 수정</h3>
             <hr>
         </div>
-        <div class="col-3"></div>
-        <div class="col-6">
-            <form action="/user/update" method="post">
-                <table class="table table-borderless">
-                    <tr>
-                        <td><label for="uid">사용자 ID</label></td>
-                        <td><input type="text" name="uid" id="uid" value = "${uid}"></td>
+        <div class="col-2"></div>
+        <div class="col-8">
+          <form action="/user/update" method="post"enctype="multipart/form-data">
+            <table class="table table-borderless">
+              <tr>
+                <td><label for="uid">사용자 ID</label></td>
+                <td><input type="text" name="uid" id="uid" value = "${uid}"></td>
                     </tr>
                     <tr>
                         <td><label for="pwd">패스워드</label></td>
                         <td><input type="password" name="pwd" id="pwd"placeholder="비밀번호를 입력하세요"></td>
+                        <td><td rowspan="5"><img src="/uploads/${result.photo}" class = "img-fluid" alt="photo" style="width:200px"></td>
                     </tr>
                     <tr>
                         <td><label for="pwd2">패스워드 확인</label></td>
@@ -406,61 +408,73 @@ module.exports = {
                         <td><input type="tel" name="tel" id="tel"value = "${result.tel}"></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: center;">
+                        <td colspan = "3"><div class="form-group">
+                          <label for="picture">프로필 사진</label>
+                          <input type="file" class="form-control-file" name="photo" id = "photo">
+                        </div></td>
+                      </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
                             <input class="btn btn-primary" type="submit" value="제출">
-                            <button class="btn btn-secondary" value="취소" onclick = "location href = '/bbs/list/1'">취소</button>
-                            <button class="btn btn-outline-danger float-right floating-button" onclick="location.href = '/user/delete'">탈퇴</button>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-        <div class="col-3">
+                            <input type = button class="btn btn-secondary" value="취소" onclick = "location.href = '/bbs/list/1'">
+                            <input type = button class="btn btn-outline-danger float-right floating-button float-bottom" value="탈퇴"onclick="location.href = '/user/delete'">
+                          </td>
+                        </tr>
+                      </table>
+                    </form>
+                  </div>
+                  <div class="col-2">
         </div>
       </div>
     </div>
     `;
   },
-  userInfoForm: function (result,uid) {
+  userInfoForm: function (result,html) {
     return `
-    <div class="row">
-    <div class="col-xs-3 col-md-3"></div>
-    <div class="col-xs-5 col-md-5 text-center">
-      <h2 class="text-center">게시글 보기</h2>
-      <p>&nbsp;</p>
-      <div class="table table-responsive">
-        <table class="table">
-          <tr>
-            <th class="">UID</th>
-            <td>${result.uid}</td>
-          </tr>
-          <tr>
-            <th class="success">이름</th>
-            <td>${result.uname}</td>
-          </tr>
-          <tr>
-            <th class="success">등록일</th>
-            <td>${result.regTime}</td>
-          </tr>
-          <tr>
-            <th class="success">Tel</th>
-            <td>${result.tel}</td>
-          </tr>
-          <tr>
-            <th class="success">E-MAIL</th>
-            <td>${result.email}</td>
-          </tr>
-         
-          <br>
-          <tr>
-            <td colspan="3" class="text-center">
-              <input type="button" class="btn btn-light" value="탈퇴시키기" onclick="location.href='/user/delete/${uid}'">
-              <input type="button" class="btn btn-light" value="목록보기" onclick="location.href='/user/management'">
-            </td>
-          </tr>
-        </table>
+    <div class="container" style="margin-top: 90px;">  
+      <div class="row">
+        <div class="col-12">
+        </div>
+        <div class ="col-2"></div>
+        <div class="col-9">
+          <p>&nbsp;</p>
+          <h3 class = "text-center">사용자 정보</h3><hr>
+          <div class="table table-responsive table-borderless">
+            <table>
+              <tr>
+                <th>UID</th>
+                <td style = "width:400px;">${result.uid}</td>
+                <td rowspan="4"colspan="3" style = "width:205px"><img src="/uploads/${result.photo}" class = "img-fluid float-right" alt="photo" style="width:200px"></td>
+            </tr>
+              <tr>
+                <th class="success">이름</th>
+                <td>${result.uname}</td>
+              </tr>
+              <tr>
+                <th class="success">등록일</th>
+                <td>${result.regDate}</td>
+              </tr>
+              <tr>
+                <th class="success">Tel</th>
+                <td>${result.tel}</td>
+              </tr>
+              <tr>
+                <th class="success">E-MAIL</th>
+                <td>${result.email}</td>
+                <th>상태<th>
+                <td>${result.isDeleted}<td>
+              </tr>
+              <br>
+              <tr>
+                <td colspan="5" class="text-center">
+                  ${html}
+                <input type="button" class="btn btn-light" value="목록보기" onclick="location.href='/user/management'">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class ="col-2"></div>
       </div>
-    </div>
   </div>`;
   }
 }

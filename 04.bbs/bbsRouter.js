@@ -90,7 +90,7 @@ bRouter.post('/update/:bid', ut.isLoggedin, (req, res) => {
     res.redirect(`/bbs/${bid}/${uid}`)
   })
 })
-bRouter.get('/delete/:bid/:uid', ut.isLoggedin, (req, res) => {
+bRouter.get('/delete/:bid/:uid',ut.isLoggedin,(req, res) => {
   let uid = req.params.uid
   let bid = req.params.bid
   let suid = req.session.uid
@@ -100,7 +100,7 @@ bRouter.get('/delete/:bid/:uid', ut.isLoggedin, (req, res) => {
     })
   } else {
     const view = require('./view/alertMessage');
-    let html = view.alertMsg(`삭제권한이 없습니다`, `/bbs/${bid}/${uid}`)
+    let html = view.alertMsg(`삭제권한이 없습니다`)
     res.send(html);
   }
 });

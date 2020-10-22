@@ -64,7 +64,7 @@ module.exports = {
     <table class="table table-hover">
     <h1 class = "text-center">게시판 목록</h1>
     <tr>
-    <thead>
+    <thead class = "thead-light">
       <th>번호</th>
       <th>제목</th>
       <th>글쓴이</th>
@@ -142,7 +142,7 @@ module.exports = {
     <table class="table table-hover">
     
     <tr>
-    <thead>
+    <thead class = "thead-light">
       <th>번호</th>
       <th>제목</th>
       <th>글쓴이</th>
@@ -155,7 +155,7 @@ module.exports = {
     ${html} 
     </tbody>
     </table>
-    <button class="btn btn-outline-primary float-right" onclick="location.href = '/bbs/list/1'">돌아가기</button> 
+    <button class="btn btn-outline-primary float-right" onclick="history.back(-1)">돌아가기</button> 
     </div>
     ${templete.pagination(pageNo,startPage,endPage,totalPage)}   
     ${templete.footer()}
@@ -175,29 +175,36 @@ module.exports = {
     `;
   },
   BoardInfo: function (results, uname, uid, rows,) {
-    
     let html = '';
+    let countRows = 0;
     for (row of rows) {
       if (row.uid === uid) {
         html += `<tr><td><div class = "float-right text-dark  "style="background-color:rgb(255, 255, 240)"><span class="badge "><h5>${row.uid} </h5></span><small>${row.regtime}</small><br>${row.content}</div></td></tr>
         `;
+        countRows++;
       }else{
         html += `<tr><td><div class = "float-left text-dark  "style="background-color:rgb(213, 255, 255)"><span class="badge "><h5>${row.uid} </h5></span><small>${row.regtime}</small><br>${row.content}<div></td></tr>
-        `;}
+        `;
+        countRows++;
+      }
       }
       let buttonBox = '';
       if (results[0].uid === uid) {
         buttonBox += `
-          <input type="button" class="btn btn-light" value="수정하기" onclick="location.href='/bbs/update/${results.bid}/${results.uid}'">
-          <input type="button" class="btn btn-light" value="삭제하기" onclick="location.href='/bbs/delete/${results.bid}/${results.uid}'">
-        `;
+          <a href="/bbs/update/${results[0].bid}/${results[0].uid}">
+            <img src="/img/writing.png" alt="write" style="height:40px;margin-right: 10px;" >
+          </a>
+          <a href="/bbs/delete/${results[0].bid}/${results[0].uid}">
+            <img src="/img/delete.png" alt="delete" style="height:40px;margin-right: 10px;" >
+          </a>
+          `;
       }
      
     return `
     ${templete.header2()}
     ${templete.top(uname, uid)}
     <body class="pt-auto pb-5">
-    ${templete.showBoard(results,buttonBox)}
+    ${templete.showBoard(results,buttonBox,countRows)}
     ${templete.replyForm(html)}
     ${templete.footer()}
     </body>
@@ -285,6 +292,7 @@ module.exports = {
             <td>${row.tel}</td>
             <td>${row.email}</td>
             <td>${row.regDate}</td>
+            <td>${row.isDeleted}</td>
           </tr>
           `;
     }
@@ -297,12 +305,13 @@ module.exports = {
     <table class="table table-hover">
     
     <tr>
-    <thead>
+    <thead class = "thead-light">
       <th>UID</th>
       <th>이름</th>
       <th>전화번호</th>
       <th>E-MAIL</th>
       <th>등록시간</th>
+      <th>탈퇴여부</th>
     </tr>
     </thead>
   
@@ -317,12 +326,17 @@ module.exports = {
     `;
   },
   userInfo: function (results, uname, uid) {
-    
+    let html = '';
+    if (results.isDeleted !== '탈퇴') {
+      html += `
+      <input type="button" class="btn btn-light" value="탈퇴시키기" onclick="location.href='/user/delete/${uid}'">
+      ` 
+    }
     return `
     ${templete.header2()}
     ${templete.top(uname, uid)}
     <body class="pt-auto pb-5">
-    ${templete.userInfoForm(results,uid)}
+    ${templete.userInfoForm(results,html)}
     ${templete.footer()}
     </body>
     </html>
