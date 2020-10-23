@@ -7,7 +7,7 @@ module.exports = {
       <div class="container" style="margin-top: 90px;">  
       <div class="row">
           <div class="col-12">
-              <h3>회원 가입</h3>
+              <h3 class = "text-center">회원 가입</h3>
               <hr>
           </div>
           <div class="col-3"></div>
@@ -46,7 +46,7 @@ module.exports = {
                       </tr>
                       <tr>
                         <td colspan="2" style="text-align: center;">
-                          <input class="btn btn-primary" type="submit" value="제출">
+                          <input class="btn btn-primary" type="submit" value="가입">
                           <input class="btn btn-secondary" type="reset" value="취소">
                         </td>
                       </tr>

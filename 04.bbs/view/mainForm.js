@@ -84,7 +84,8 @@ module.exports = {
     </html>
     `;
   },
-  searchForm: function (uname, rows, uid,pageNo,startPage,endPage,totalPage) {
+  searchForm: function (uname, rows, uid,seachTitle) {
+    console.log(seachTitle);
     let date = moment().format('YYYY-MM-DD');
     let html = '';
     for (let row of rows) {
@@ -139,8 +140,8 @@ module.exports = {
      <body class="pt-5">
      ${templete.top(uname, uid)}
     <div class="container pt-5">
+    <h1 class = "text-center"><small>${seachTitle}</small> : 검색 결과</h1>
     <table class="table table-hover">
-    
     <tr>
     <thead class = "thead-light">
       <th>번호</th>
@@ -157,16 +158,15 @@ module.exports = {
     </table>
     <button class="btn btn-outline-primary float-right" onclick="history.back(-1)">돌아가기</button> 
     </div>
-    ${templete.pagination(pageNo,startPage,endPage,totalPage)}   
     ${templete.footer()}
     </body>
     </html>
     `;
   },
-  create: function () {
+  create: function (uname, uid) {
     return `
     ${templete.header2()}
-    ${templete.top()}
+    ${templete.top(uname, uid)}
     <body class="pt-auto">
     ${templete.createForm()}
     ${templete.footer()}

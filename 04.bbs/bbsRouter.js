@@ -6,8 +6,18 @@ const mainForm = require('./view/mainForm');
 const templete = require('./view/templete');
 const ut = require('./view/util')
 const app = express();
+const multer = require('multer')
+const upload = multer({
+  storage: multer.diskStorage({
+      // set a localstorage destination
+      destination: __dirname + '/../public/upload/',
+      // set a file name
+      filename: (req, file, cb) => {
+          cb(null, new Date().toISOString().replace(/[-:\.A-Z]/g, '') + '_' + file.originalname);
+      }
+  })
+});
 app.use(express.static(__dirname + '/public'));
-
 const bRouter = express.Router();
 bRouter.get('/list/:page',ut.isLoggedin, (req,res)=>{
   let page = parseInt(req.params.page);
@@ -35,7 +45,10 @@ bRouter.get('/list/:page',ut.isLoggedin, (req,res)=>{
   })
 })
 bRouter.get('/create',(req,res)=>{
-  let html = mainForm.create();
+  console.log(req.session.uname);
+  let uname = req.session.uname
+  let uid = req.session.uid
+  let html = mainForm.create(uname,uid);
   res.send(html);
 })
 
@@ -58,7 +71,9 @@ bRouter.get('/:bid/:uid',ut.isLoggedin, (req, res) => {
     dm.getReply(bid,resultRp=>{
       let html = mainForm.BoardInfo(results, uname, uid, resultRp,bid);
       res.send(html);
-      dm.increaseViewCount(bid,result=>{})
+      if (results[0].uid !== req.session.uid) {
+        dm.increaseViewCount(bid,result=>{})
+      }
     })
   })
 });
@@ -140,14 +155,25 @@ bRouter.get('/reply/delete/:bid/:uid/:rid',ut.isLoggedin,(req,res)=>{
   })
 bRouter.post(`/search`,ut.isLoggedin,(req,res)=>{
   let keyword = '%'+req.body.title+'%'
+  let seachTitle = req.body.title
   dm.findTitle(keyword, rows=>{
     const view = require('./view/mainForm')
     let uname = req.session.uname
     let uid = req.session.uid
-    let html = view.searchForm(uname,rows,uid)
+    let html = view.searchForm(uname,rows,uid,seachTitle)
     res.send(html);
   })
 })
+bRouter.post('/uploadImage',upload.single('upload'), (req, res) => {
+  console.log(req.file);
+  let fileUrl = '/uploads/' + req.file.filename;
+  let jsonResponse = {
+      uploaded: 1,
+      fileName: req.file.filename,
+      url: fileUrl
+  };
+  res.send(JSON.stringify(jsonResponse));
+});
 
 
 module.exports = bRouter;

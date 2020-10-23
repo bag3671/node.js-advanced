@@ -13,7 +13,7 @@ module.exports = {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+    <script src="/ckeditor/ckeditor.js"></script>
   
 </head >
     `
@@ -24,14 +24,15 @@ module.exports = {
     <!DOCTYPE html>
     <html lang="en">
     <head>
-      <title>Bootstrap Example</title>
+      <title>회원가입</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
       <link rel="stylesheet" href="/fontawesome-free-5.15.1-web/css/all.min.css">
       <script src="/jquery/jquery.min.js"></script>
-      <script src="/popper.js/popper.min.js"></script>
+      <script src="/popper/popper.min.js"></script>
       <script src="/bootstrap/css/js/bootstrap.min.js"></script>
+      <script src="/ckeditor/ckeditor.js"></script>
     </head>
     `
   },
@@ -245,6 +246,7 @@ module.exports = {
           <div class="row"></div>
           <div class="col-1"></div>
           <div class="col">
+          <h1 class = "text-center">글쓰기</h1>
           <form action="/bbs/create" method="POST">
           <label for="title" class="text-center">글 제목</label>
           <input type="text" class="form-control form-control"
@@ -260,7 +262,10 @@ module.exports = {
           
           </div>
           <div class="col-1"></div>
-          
+          <script>
+          CKEDITOR.replace( 'content',{filebrowserUploadUrl:'/bbs/uploadImage',image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
+          image2_disableResizer: true},); 
+          </script>
           </div>
         </body>
     `;
@@ -286,7 +291,6 @@ module.exports = {
             <td></td>
             <td class = "text-right">조회 : ${result.viewCount} | 댓글 : ${countRows}</td>
           </tr>
-         
           <tr>
             <th class="success text-center" colspan="4"><hr></th>
             </tr>
@@ -312,13 +316,13 @@ module.exports = {
     `;
   },
   updateForm: function (result, uid) {
-    return `<body>
-    <h1 class="text-center">수정</h1>
+    return `<body class = "pt-5">
     <hr>
-    <div class = "container mx-auto">
+    <div class = "container mx-auto pt-5">
     <div class="row"></div>
     <div class="col-1"></div>
     <div class="col">
+    <h1 class = "text-center">글수정</h1>
     <form action="/bbs/update/${uid}" method="POST">
     <input type="hidden"name="bid" value="${result.bid}">
     <input type="hidden"name="uid" value="${uid}">
@@ -333,7 +337,10 @@ module.exports = {
     value = "${result.content}"
       style="width:100%;height:100;border:1;overflow:visible;text-overflow:ellipsis;" rows=15
       name="content" id = "content">${result.content}</textarea>
-      <input type="submit" value="등록">
+      <script>
+          CKEDITOR.replace( 'content' );
+          </script>
+      <input type="submit" class = "btn btn-primary" value="등록">
     </table>
   </form> 
     
@@ -359,7 +366,7 @@ module.exports = {
                             <textarea style="width: 1100px" rows="3" cols="30" id="comment" name="comment" placeholder="댓글을 입력하세요"></textarea>
                             <br>
                             <div>
-                                <input type="submit" value="등록"class="btn pull-right btn-success">
+                                <input type="submit" value="등록"class="btn pull-right btn-primary">
                             </div>
                         </td>
                     </tr>
@@ -371,6 +378,14 @@ module.exports = {
 </div>`
   },
   updateUserForm: function (result, uid) {
+    let email = result.email
+    let tel = result.tel
+    if (email === '없음') {
+      email = '';
+    }
+    if (tel === '없음') {
+      tel = '';
+    }
     return `
     <div class="container" style="margin-top: 90px;">  
     <div class="row">
@@ -401,11 +416,11 @@ module.exports = {
                     </tr>
                     <tr>
                         <td><label for="email">email</label></td>
-                        <td><input type="email" name="email" id="email"value = "${result.email}"></td>
+                        <td><input type="email" name="email" id="email"value = "${email}"></td>
                     </tr>
                     <tr>
                         <td><label for="tel">전화번호</label></td>
-                        <td><input type="tel" name="tel" id="tel"value = "${result.tel}"></td>
+                        <td><input type="tel" name="tel" id="tel"value = "${tel}"></td>
                     </tr>
                     <tr>
                         <td colspan = "3"><div class="form-group">
