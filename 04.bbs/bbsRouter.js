@@ -10,7 +10,7 @@ const multer = require('multer')
 const upload = multer({
   storage: multer.diskStorage({
       // set a localstorage destination
-      destination: __dirname + '/../public/upload/',
+      destination: __dirname + '/public/uploads/',
       // set a file name
       filename: (req, file, cb) => {
           cb(null, new Date().toISOString().replace(/[-:\.A-Z]/g, '') + '_' + file.originalname);
@@ -67,7 +67,7 @@ bRouter.get('/:bid/:uid',ut.isLoggedin, (req, res) => {
   let uname = req.session.uname;
   let bid = req.params.bid;
   let uid = req.params.uid
-  dm.getBbs(bid, results => {
+  dm.getBbs(bid, results => { 
     dm.getReply(bid,resultRp=>{
       let html = mainForm.BoardInfo(results, uname, uid, resultRp,bid);
       res.send(html);
@@ -78,7 +78,7 @@ bRouter.get('/:bid/:uid',ut.isLoggedin, (req, res) => {
   })
 });
 
-bRouter.get('/update/:bid/:uid', ut.isLoggedin, (req, res) => {
+bRouter.get('/update/:bid/:uid', ut.isLoggedin,upload.single('upload'), (req, res) => {
   let uid = req.params.uid
   let bid = req.params.bid
   let suid = req.session.uid
@@ -95,7 +95,7 @@ bRouter.get('/update/:bid/:uid', ut.isLoggedin, (req, res) => {
   }
 })
 
-bRouter.post('/update/:bid', ut.isLoggedin, (req, res) => {
+bRouter.post('/update/:bid', ut.isLoggedin,upload.single('upload'),(req, res) => {
   let title = req.body.title;
   let content = req.body.content;
   let bid = req.body.bid
@@ -167,6 +167,7 @@ bRouter.post(`/search`,ut.isLoggedin,(req,res)=>{
 bRouter.post('/uploadImage',upload.single('upload'), (req, res) => {
   console.log(req.file);
   let fileUrl = '/uploads/' + req.file.filename;
+  console.log(fileUrl);
   let jsonResponse = {
       uploaded: 1,
       fileName: req.file.filename,

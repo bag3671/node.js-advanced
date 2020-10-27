@@ -263,9 +263,48 @@ module.exports = {
           </div>
           <div class="col-1"></div>
           <script>
-          CKEDITOR.replace( 'content',{filebrowserUploadUrl:'/bbs/uploadImage',image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
-          image2_disableResizer: true},); 
-          </script>
+          CKEDITOR.replace('content', {
+              extraPlugins: 'uploadimage',
+              height: 300,
+              filebrowserUploadUrl: '/bbs/uploadImage',
+              // Upload images to a CKFinder connector (note that the response type is set to JSON).
+              //uploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json',
+              // Configure your file manager integration. This example uses CKFinder 3 for PHP.
+              //filebrowserBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html',
+              //filebrowserImageBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html?type=Images',
+              //filebrowserUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files',
+              //filebrowserImageUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Images',
+              // The following options are not necessary and are used here for presentation purposes only.
+              // They configure the Styles drop-down list and widgets to use classes.
+              stylesSet: [{
+                  name: 'Narrow image',
+                  type: 'widget',
+                  widget: 'image',
+                  attributes: {
+                      'class': 'image-narrow'
+                  }
+              },
+              {
+                  name: 'Wide image',
+                  type: 'widget',
+                  widget: 'image',
+                  attributes: {
+                      'class': 'image-wide'
+                  }
+              }
+              ],
+              // Load the default contents.css file plus customizations for this sample.
+              contentsCss: [
+                  'http://cdn.ckeditor.com/4.15.0/full-all/contents.css',
+                  'assets/css/widgetstyles.css'
+              ],
+              // Configure the Enhanced Image plugin to use classes instead of styles and to disable the
+              // resizer (because image size is controlled by widget styles or the image takes maximum
+              // 100% of the editor width).
+              image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
+              image2_disableResizer: true
+          });
+      </script>    
           </div>
         </body>
     `;
@@ -329,25 +368,60 @@ module.exports = {
     <label for="title" class="text-center">글 제목</label>
     <input type="text" class="form-control form-control"
     value ="${result.title}"
-    name="title" id="title"
-      style="width:100%;border:1;overflow:visible;text-overflow:ellipsis;
-      >
+    name="title" id="title">
     <label for="content" class="text-center">내용</label>
     <textarea class="form-control"
-    value = "${result.content}"
       style="width:100%;height:100;border:1;overflow:visible;text-overflow:ellipsis;" rows=15
       name="content" id = "content">${result.content}</textarea>
-      <script>
-          CKEDITOR.replace( 'content' );
-          </script>
       <input type="submit" class = "btn btn-primary" value="등록">
     </table>
   </form> 
-    
     </div>
     <div class="col-1"></div>
-    
     </div>
+    <script>
+          CKEDITOR.replace('content', {
+              extraPlugins: 'uploadimage',
+              height: 300,
+              filebrowserUploadUrl: '/bbs/uploadImage',
+              // Upload images to a CKFinder connector (note that the response type is set to JSON).
+              //uploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json',
+              // Configure your file manager integration. This example uses CKFinder 3 for PHP.
+              //filebrowserBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html',
+              //filebrowserImageBrowseUrl: '/apps/ckfinder/3.4.5/ckfinder.html?type=Images',
+              //filebrowserUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files',
+              //filebrowserImageUploadUrl: '/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Images',
+              // The following options are not necessary and are used here for presentation purposes only.
+              // They configure the Styles drop-down list and widgets to use classes.
+              stylesSet: [{
+                  name: 'Narrow image',
+                  type: 'widget',
+                  widget: 'image',
+                  attributes: {
+                      'class': 'image-narrow'
+                  }
+              },
+              {
+                  name: 'Wide image',
+                  type: 'widget',
+                  widget: 'image',
+                  attributes: {
+                      'class': 'image-wide'
+                  }
+              }
+              ],
+              // Load the default contents.css file plus customizations for this sample.
+              contentsCss: [
+                  'http://cdn.ckeditor.com/4.15.0/full-all/contents.css',
+                  'assets/css/widgetstyles.css'
+              ],
+              // Configure the Enhanced Image plugin to use classes instead of styles and to disable the
+              // resizer (because image size is controlled by widget styles or the image takes maximum
+              // 100% of the editor width).
+              image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
+              image2_disableResizer: true
+          });
+      </script>
   </body>`;
   },
   replyForm: function (html) {
