@@ -227,7 +227,7 @@ module.exports = {
   },
   getReply : function (bid, callback) {
     let sql = `
-    SELECT rid,bid,uid,content,date_format(regtime,'%Y-%m-%d %r')as regtime FROM reply where bid = ? and isDeleted = 0    
+    SELECT rid,bid,uid,content,date_format(regtime,'%Y-%m-%d %r')as regtime FROM reply where bid = ?    
     `;
     let conn = this.getConnection();
     conn.query(sql, bid, (error,resultRp,fields) => {
@@ -239,7 +239,7 @@ module.exports = {
   },
   getReply2 : function (rid, callback) {
     let sql = `
-    SELECT * FROM reply where rid = ? and isDeleted = 0    
+    SELECT * FROM reply where rid = ?   
     `;
     let conn = this.getConnection();
     conn.query(sql, rid, (error,resultRp,fields) => {
